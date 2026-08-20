@@ -1,0 +1,36 @@
+# vllm-notes 默认配置：YAML 提供默认值，同名环境变量优先（见 docs/adr/0005）。
+# 改这里即可适配不同环境/版本，无需改脚本。
+
+model: "Qwen/Qwen3-0.6B"      # 对应 $MODEL（smoke 模型，基准与 profile 统一）
+devices: "0"                  # 对应 $ASCEND_RT_VISIBLE_DEVICES
+
+bench:
+  backend: vllm               # vllm bench serve --backend
+  endpoint: /v1/completions   # vllm bench serve --endpoint
+  base_url: ""                # 对应 $BENCH_BASE_URL（openai 后端时填独立 server 根，如 http://127.0.0.1:8010，vllm 自行拼 /v1/* 路径）
+  num_prompts: 10             # 对应 $BENCH_NUM_PROMPTS
+  request_rate: "inf"         # 对应 $BENCH_REQUEST_RATE（引号避免 YAML 解析成浮点）
+  dataset: random             # 对应 $BENCH_DATASET（smoke 默认 random；sharegpt 需下载数据集）
+  dataset_path: ""            # 对应 $BENCH_DATASET_PATH（sharegpt 时填本地 jsonl 路径）
+  load_format: ""             # 对应 $BENCH_LOAD_FORMAT（smoke 填 dummy，随机权重免下载）
+  input_len: 128              # 对应 $BENCH_INPUT_LEN
+  output_len: 128             # 对应 $BENCH_OUTPUT_LEN
+  ignore_eos: true            # 对应 $BENCH_IGNORE_EOS
+  batch_size: 8               # 对应 $BENCH_BATCH_SIZE（latency 子命令）
+  gpu_util: ""                # --gpu-memory-utilization（共享机显存紧张时调低，如 0.05；空 = vllm 默认 0.9）
+  max_model_len: ""           # --max-model-len（与 gpu_util 同收紧时配套调低；空 = 模型默认，如 40960）
+
+profile:
+  port: 8080                  # 对应 $PORT（profile.sh）
+  prof_dir: profile_out       # 对应 $PROF_DIR（相对仓库根目录）
+  with_stack: false           # torch_profiler_with_stack（JSON 布尔，须为小写 true/false）
+
+prepare:
+  model_dir: ""               # 模型权重目录；空 = HF 默认缓存（对应 $PREPARE_MODEL_DIR）
+  dataset_dir: datasets       # 数据集/工作负载文件目录（相对仓库根，已 gitignore）
+  sharegpt_url: "https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/ShareGPT_V3_unfiltered_cleaned_split.json"
+  sharegpt_file: sharegpt.jsonl  # 下载后的数据集文件名（对应 $PREPARE_SHAREGPT_FILE）
+  workload_file: workload.jsonl  # 生成的自定义负载文件名（对应 $PREPARE_WORKLOAD_FILE）
+  workload_num: 16            # 负载请求数（对应 $PREPARE_WORKLOAD_NUM）
+  workload_len: 256           # 每条 prompt 目标词数 ≈ token 数（对应 $PREPARE_WORKLOAD_LEN）
+  workload_seed: 42           # 固定种子，可复现（对应 $PREPARE_WORKLOAD_SEED）
