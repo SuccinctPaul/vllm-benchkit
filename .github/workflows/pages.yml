@@ -1,6 +1,8 @@
 # 构建 vllm-notes 文档并发布到 GitHub Pages。
 # 前置：仓库 Settings → Pages → Source 选 "GitHub Actions"（一次性）。
-# 触发：push 到目标分支（默认 feat/vllm-xcheck；如需改分支，改下方 concurrency/branches）。
+# 触发：push 到目标分支（默认 feat/vllm-xcheck；如需改分支，改下方 on/push/branches）
+# 说明：link_rewrite 插件是本地微包（mkdocs/），在构建步骤里 pip install -e 装上；
+#       repo/branch 由 GitHub 自动注入 GITHUB_REPOSITORY / GITHUB_REF_NAME。
 name: Build docs & deploy to Pages
 
 on:
@@ -24,13 +26,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v4
-      - name: Build docs site (mkdocs-material)
-        uses: squidfunk/mkdocs-material@master
+      - uses: actions/setup-python@v5
         with:
-          docs-dir: .         # mkdocs.yml 在仓库根，docs_dir: docs 会按配置取
-          config-file: mkdocs.yml
-          publish: false
+          python-version: "3.11"
+      - name: Install mkdocs-material + 本地插件
+        run: |
+          pip install --no-compile mkdocs-material
+          pip install --no-compile -e ./mkdocs
+      - uses: actions/configure-pages@v4
+      - name: Build docs site
+        run: mkdocs build
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
