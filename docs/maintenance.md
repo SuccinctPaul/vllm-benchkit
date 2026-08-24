@@ -14,9 +14,9 @@
 |------|-------------|-------------|
 | 机器/仓库/路径/版本 | [config/topology.yaml](../config/topology.yaml)（已 .gitignore） | 所有文档的 `server/dir/repos` 键名 |
 | 验收配置字段契约 | [config/vllm-xcheck/schema.yaml](../config/vllm-xcheck/schema.yaml) | config-reference.md 的字段表 |
-| 验收任务明细与进度 | [acceptance/acceptance-tasks.md](./acceptance/acceptance-tasks.md) | features / v41-coverage / design 的状态 |
+| 验收任务明细与进度 | [acceptance/acceptance-tasks.md](./acceptance/acceptance-tasks.md) | features / acceptance-coverage / design 的状态 |
 | 通用运行参数默认值 | [config/config.yaml](../config/config.yaml) | guide/config-reference.md |
-| 为什么这么设计 | [adr/](./adr/)（0001–0011，只追加不改） | guide/design、acceptance/design 的"取舍" |
+| 为什么这么设计 | [adr/](./adr/)（0001–0012，只追加不改） | guide/design、acceptance/design 的"取舍" |
 | 术语/目标/边界 | [CONTEXT.md](../CONTEXT.md) | 各文档引出处 |
 
 **推论**：改配置先改 schema 白名单；改任务先改 acceptance-tasks；版本先改 topology。其余文档只做"指向"。
@@ -28,7 +28,7 @@
 | `config/**/schema.yaml`（新增/改配置键） | 必须先入 `allowed` 白名单 | 展开时 fail-closed 拒绝，配置文件起不来 |
 | `src/` 代码（模块/入口/命令） | 对应 [acceptance/design.md](./acceptance/design.md) 模块表、[guide/commands.md](./guide/commands.md) | 文档"文件映射"失真，读者找不到实现 |
 | 运行方式（脚本/参数/产物） | [guide/how-to-run.md](./guide/how-to-run.md)、[acceptance/how-to-run.md](./acceptance/how-to-run.md)、根 [README.md](../README.md) | 新人按文档跑不出来 |
-| 验收任务进度 | [acceptance-tasks.md](./acceptance/acceptance-tasks.md) 勾选 | v41-coverage / design 状态失真 |
+| 验收任务进度 | [acceptance-tasks.md](./acceptance/acceptance-tasks.md) 勾选 | acceptance-coverage / design 状态失真 |
 
 **约定**：能合并的别拆成两篇（这次把 `design-overview` 合并进 `design` 正是此意）；一处说明、他处引用。
 
@@ -69,8 +69,8 @@ docs/
 ├── run.md             ●怎么跑：装环境 → 冒烟 → 验收，一页串完
 ├── maintenance.md     ★（本文）为什么能维护＆运行：单一事实来源 + 同步规则 + 留痕
 ├── guide/             ▲黑盒工具细节：commands / config / output / how-to-run / design
-├── acceptance/        ▲正式验收细节：features / design / how-to-run / config-ref / v41-coverage / tasks
-├── adr/               决策记录 0001–0011（入口：adr/README.md；只追加）
+├── acceptance/        ▲正式验收细节：features / design / how-to-run / config-ref / acceptance-coverage / tasks
+├── adr/               决策记录 0001–0012（入口：adr/README.md；只追加）
 ├── official-capabilities.md   官方能力清单与可增补项
 └── roadmap.md                未来路线图
 ```
@@ -82,7 +82,7 @@ docs/
 - [ ] 新增/改了 YAML 键 → 进了 `schema.yaml` `allowed`？示例在 `config-reference.md` 同步？
 - [ ] 改了模块/命令 → `design.md` 模块表 / `commands.md` 更新？文件映射对得上？
 - [ ] 改了运行方式 → guide / acceptance 两个 how-to-run 和根 README 三处都同步？
-- [ ] 提了验收结果 → `acceptance-tasks.md` 打了勾？状态文档（design/v41-coverage）引用它而非另写？
+- [ ] 提了验收结果 → `acceptance-tasks.md` 打了勾？状态文档（design/acceptance-coverage）引用它而非另写？
 - [ ] 出现了机器名/仓库 URL/版本 → 是否只写在 `topology.yaml`？文档里换成键名了吗？
 
 > ADR 约定：新决策记录追加到 [adr/](./adr/)，序号递增，正文只描述"背景/决策/后果"，不改历史。

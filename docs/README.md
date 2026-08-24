@@ -34,7 +34,7 @@
 | **正式验收** | [acceptance/README.md](./acceptance/README.md) | A1–A4、验收覆盖度、配置参数、任务清单（入口） |
 | **设计与实操实现** | [acceptance/design.md](./acceptance/design.md) | 按模块划分的架构：四段式、每个模块、依赖、取舍、现状 |
 | **为什么能维护/运行** | [maintenance.md](./maintenance.md) | 单一事实来源、同步规则、全链路留痕、改动自查 |
-| **架构决策** | [adr/](./adr/) | 决策地图 + 0001–0011：每个"为什么这么设计"的记录 |
+| **架构决策** | [adr/](./adr/) | 决策地图 + 0001–0012：每个"为什么这么设计"的记录 |
 | **官方能力** | [official-capabilities.md](./official-capabilities.md) | 官方 `vllm bench` 能做/不能做什么 |
 | **路线图** | [roadmap.md](./roadmap.md) | 未来要做的事与阶段门 |
 

@@ -30,7 +30,7 @@
 ## 后果
 
 - 新增配置键必须先入 `schema.yaml` 的 allowed 集，否则 `acceptance.py` fail-closed 拒绝。
-- 契约与任务明细唯一事实来源 = `schema.yaml` + `acceptance-tasks.md`；features/design/v41-coverage 只做解释与导航、不另立版本。
+- 契约与任务明细唯一事实来源 = `schema.yaml` + `acceptance-tasks.md`；features/design/acceptance-coverage 只做解释与导航、不另立版本。
 
 ## 兑现回填（Verification）
 

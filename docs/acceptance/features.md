@@ -4,7 +4,7 @@
 
 > **⚠️ 先看整体状态，别误会「功能」=「已交付」**
 >
-> 截至 verify19：**A4-MT-FP16-PC 全指标 PASS、C/Q/M/I/K/Z 各组离线自测全过**，但**这套系统还不能直接拿去对外做正式交付**——正式测量前还差 3 件事：① `engine_seed=0` 渲染进 serve argv；② `structured_outputs_backend=xgrammar` 传入引擎；③ 证据链/签名组件未实现。且**D 组正式数据子集未接入**，当前只用 14B + SHORT smoke 数据在验证链路。所以下面 A1–A4 的"考纲"讲的是**这套系统设计上要考什么**，不代表"四门都已正式交付"。完整状态见 [features.md §7](#L69) 与 [v41-coverage.md](./v41-coverage.md)。
+> 截至 verify19：**A4-MT-FP16-PC 全指标 PASS、C/Q/M/I/K/Z 各组离线自测全过**，但**这套系统还不能直接拿去对外做正式交付**——正式测量前还差 3 件事：① `engine_seed=0` 渲染进 serve argv；② `structured_outputs_backend=xgrammar` 传入引擎；③ 证据链/签名组件未实现。且**D 组正式数据子集未接入**，当前只用 14B + SHORT smoke 数据在验证链路。所以下面 A1–A4 的"考纲"讲的是**这套系统设计上要考什么**，不代表"四门都已正式交付"。完整状态见 [features.md §7](#L69) 与 [acceptance-coverage.md](./acceptance-coverage.md)。
 
 ## 1. 一句话全景
 

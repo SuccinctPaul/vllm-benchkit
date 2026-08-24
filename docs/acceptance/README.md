@@ -1,7 +1,7 @@
 # 正式验收（acceptance）—— vllm-xcheck 子系统入口
 
 > 本文是 **vllm-xcheck 正式验收执行系统**（`acceptance/`）的子系统入口。全仓**唯一总入口、全局新手路线与名词**见 [../README.md](../README.md)；"这是什么/怎么跑"见 [../understand.md](../understand.md) 与 [../run.md](../run.md)。
-> 它把 `config/vllm-xcheck/` 配置层 + `src/` 执行层 + `scripts/` harness 整理成一套**可实例化、可复现、fail-closed** 的验收系统，规格覆盖见 [v41-coverage.md](./v41-coverage.md)，逐项任务见 [acceptance-tasks.md](./acceptance-tasks.md)。
+> 它把 `config/vllm-xcheck/` 配置层 + `src/` 执行层 + `scripts/` harness 整理成一套**可实例化、可复现、fail-closed** 的验收系统，规格覆盖见 [acceptance-coverage.md](./acceptance-coverage.md)，逐项任务见 [acceptance-tasks.md](./acceptance-tasks.md)。
 > 一句话玩法：**三层配置合成 profile → 独立 vllm serve + 客户端基准引擎 → 判定门禁 → 证据归档**。
 
 ## 先用大白话说：这是干嘛的
@@ -34,7 +34,7 @@
 | **任务专家速成** | [task-expertise.md](./task-expertise.md) | 每条任务（A1–A4）的需求/目标、判定，以及「配置为什么这么设、改了会怎样」 | 想成为某条任务的配置专家、理解设计意图（读完 features 再读） |
 | **设计** | [design.md](./design.md) | 按模块划分的架构：四段式链路、每模块职责、数据流、依赖关系 | 想理解代码怎么组织、改代码前先看懂 |
 | **How to run** | [how-to-run.md](./how-to-run.md) | 怎么跑：前置、部署、起服务、跑验收/自测、看结果 | 第一次上手跑验收 |
-| **验收覆盖度** | [v41-coverage.md](./v41-coverage.md) | 验收需求各项功能的实现覆盖度（已实现/未实现/真机项） | 想核对「方案里要的东西我们做了没」 |
+| **验收覆盖度** | [acceptance-coverage.md](./acceptance-coverage.md) | 验收需求各项功能的实现覆盖度（已实现/未实现/真机项） | 想核对「方案里要的东西我们做了没」 |
 | **配置参数** | [config-reference.md](./config-reference.md) | 配置文件（common/cells/precision/schema）每个参数的含义 | 想改/新增一个配置项 |
 | **任务清单** | [acceptance-tasks.md](./acceptance-tasks.md) | 按组 C/I/Q/M/A/K/D/S/Z 的逐项任务、做法与验收（进度打勾） | 想知道某项做到哪了、下一步做啥 |
 
@@ -43,7 +43,7 @@
 1. **[features.md §1 一句话全景](./features.md#L9)** —— 先看一句话全景，建立心智模型。
 2. **[design.md §2 四段式链路](./design.md#L21)** —— 理解四段式（配置 → 展开 → 执行 → 门禁归档）与模块划分。
 3. **[how-to-run.md §0 前置条件](./how-to-run.md#L15)** —— 一次性装环境，跑一个最小的离线自测验证链路通。
-4. 再按需深入：改配置读 [config-reference.md](./config-reference.md)，核对合规读 [v41-coverage.md](./v41-coverage.md)；想搞懂"每条任务为什么这么配"读 [task-expertise.md](./task-expertise.md)。
+4. 再按需深入：改配置读 [config-reference.md](./config-reference.md)，核对合规读 [acceptance-coverage.md](./acceptance-coverage.md)；想搞懂"每条任务为什么这么配"读 [task-expertise.md](./task-expertise.md)。
 
 ## 系统速览
 
@@ -86,7 +86,7 @@ precision
 
 - **这是不是另一套基准框架？** 不是。它消费 `vllm bench` 无法表达的 **验收口径**（多轮会话、工具/结构化、租户份额、窗口稳定、算力 MFU）；通用单测基准能力复用官方 `vllm bench`（见 [features.md §6](./features.md#L60)）。
 - **想看某模块怎么实现的？** 读 [design.md §5.1 读代码第一站](./design.md#L101) 的「你想做什么 → 第一站」映射。
-- **想核对验收某条做没做？** 读 [v41-coverage.md](./v41-coverage.md)，逐组有状态。
+- **想核对验收某条做没做？** 读 [acceptance-coverage.md](./acceptance-coverage.md)，逐组有状态。
 
 ## 相关文档（仓库级）
 

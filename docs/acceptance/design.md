@@ -133,4 +133,4 @@ common/cells/precision (yaml)
 - **正式测量前待补**（对应合规审计）清单见 [features.md §7](./features.md)（此处不重复，避免多处漂移）。
 - **数据口径**：同 [features.md §7「数据口径」](./features.md#L73)（唯一权威，此处不重复）。
 
-> 明细与实时勾选见 [acceptance-tasks.md](./acceptance-tasks.md)、[v41-coverage.md](./v41-coverage.md)（本次由 design-overview.md 合并而来，避免两篇重复）。
+> 明细与实时勾选见 [acceptance-tasks.md](./acceptance-tasks.md)、[acceptance-coverage.md](./acceptance-coverage.md)（本次由 design-overview.md 合并而来，避免两篇重复）。

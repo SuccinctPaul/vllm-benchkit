@@ -81,7 +81,7 @@ nav:
       - 配置参考: acceptance/config-reference.md
       - 任务清单: acceptance/acceptance-tasks.md
       - 任务专家速成: acceptance/task-expertise.md
-      - 验收覆盖度: acceptance/v41-coverage.md
+      - 验收覆盖度: acceptance/acceptance-coverage.md
       - 如何运行: acceptance/how-to-run.md
   - 官方能力: official-capabilities.md
   - 维护指南: maintenance.md

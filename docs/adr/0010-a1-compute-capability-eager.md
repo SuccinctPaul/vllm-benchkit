@@ -8,7 +8,7 @@
 | **Date** | 2026-08-24 |
 | **Type** | tuning / standard |
 | **Supersedes** | — |
-| **Related** | ADR-0008（fail-closed 落点） |
+| **Related** | ADR-0008（fail-closed 落点）、ADR-0012（A2/A3 量测口径同属分档） |
 | **映射** | A1 算力考核 ≥90% |
 
 ## 决策
@@ -22,6 +22,14 @@ MFU 要看的是**裸算力**——硬件在不动用"加速技巧"时能不能�
 ## 测量工具链
 
 `ascend-dmi` + `effective_compute_spec v1`（分母）+ `msprof`（逐算子校验，误差≤3%）。
+
+## A1 计量口径：只算 prefill、防复用、防中途停
+
+MFU≥90% 只是"多少"，还得钉死"怎么算"才不会漂。三条口径（详见 [task-expertise §1](../acceptance/task-expertise.md) 的逐项推理，本 ADR 为决策权威）：
+
+1. **只算 prefill 算力**：主形状固定 `output_len:1` + `max_tokens:1`、`ignore_eos:true`。decode 主要吃访存、不计入 FLOPs 峰值，MFU 口径统一按 prefill；`ignore_eos` 强制不中途停，保证每问都稳定产出那 1 个 unit、采样可复现（eos 提前打断则请求体不可比）。
+2. **禁前缀复用**：`enable_prefix_caching:false`。复用前缀会少算 FLOPs、低估算力，破坏"裸算力"口径。
+3. **固定 FP16**：峰值算力按张量单元的 FP16 定义；W8A8 是降精度优化，不做算力峰值口径。
 
 ## 代价与局限
 
