@@ -1,0 +1,46 @@
+# 构建 vllm-notes 文档并发布到 GitHub Pages。
+# 前置：仓库 Settings → Pages → Source 选 "GitHub Actions"（一次性）。
+# 触发：push 到目标分支（默认 feat/vllm-xcheck；如需改分支，改下方 concurrency/branches）。
+name: Build docs & deploy to Pages
+
+on:
+  push:
+    branches:
+      - feat/vllm-xcheck
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v4
+      - name: Build docs site (mkdocs-material)
+        uses: squidfunk/mkdocs-material@master
+        with:
+          docs-dir: .         # mkdocs.yml 在仓库根，docs_dir: docs 会按配置取
+          config-file: mkdocs.yml
+          publish: false
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

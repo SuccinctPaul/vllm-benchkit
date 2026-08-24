@@ -167,6 +167,10 @@ venv.bak/
 # mkdocs documentation
 /site
 
+# docs 站点构建环境与本地 repo 信息
+.docs-venv/
+.mkdocs-repo
+
 # mypy
 .mypy_cache/
 .dmypy.json
