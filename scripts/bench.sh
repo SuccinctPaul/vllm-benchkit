@@ -59,7 +59,7 @@ mkdir -p "$RUNS_DIR"
 # 归档模式写 manifest.yaml：两仓完整哈希 + 生效参数快照（getconf 输出）
 if [ -n "$vllm_sha7" ] && [ -n "$va_sha7" ]; then
   {
-    printf 'mode: %s\ndate: %s\nhostname: %s\n' "$MODE" "$(date "+%Y-%m-%dT%H:%M:%S%z")" "$(hostname)"
+    printf 'mode: %s\ndate: %s\nhostname: %s\n' "$MODE" "$(date "+%Y-%m-%dT%H:%M:%S%z")" "${HOSTNAME:-$(uname -n)}"
     printf 'vllm_commit: %s\nvllm_ascend_commit: %s\n' \
       "$(git -C "$DIR/vllm" rev-parse HEAD 2>/dev/null || true)" \
       "$(git -C "$DIR/vllm-ascend" rev-parse HEAD 2>/dev/null || true)"
