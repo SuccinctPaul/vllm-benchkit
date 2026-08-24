@@ -1,6 +1,6 @@
 # vllm-xcheck 正式验收执行层任务清单
 
-> 来源：对 `config/vllm-xcheck/vLLM-HUST-standard-delivery-test-plan-V4.1.pdf` 附录冻结表（附-1~附-8）的工具链缺口审计（2026-08-21）。
+> 来源：对《V4.1 标准交付测试方案》附录冻结表（附-1~附-8）的工具链缺口审计（2026-08-21）。
 >
 > 现状基线：
 > - **配置层已达标**：common / cells / precision + schema + `src/acceptance.py` 展开，覆盖冻结表全部服务端参数（附-2/3/4 逐项一致）。

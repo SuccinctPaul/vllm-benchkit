@@ -1,7 +1,7 @@
-# V4.1 覆盖度（vLLM-HUST standard delivery test plan）
+# V4.1 覆盖度
 
-> 本文回答「**V4.1 PDF 里要的东西，我们做了没**」。逐组按**已实现 / 真机项 / 未实现**标注；状态实时值以 [acceptance-tasks.md](./acceptance-tasks.md) 勾选为准。
-> 对应 PDF：`config/vllm-xcheck/vLLM-HUST-standard-delivery-test-plan-V4.1.pdf`（表附-1~附-8）。
+> 本文回答「**V4.1 方案里要的东西，我们做了没**」。逐组按**已实现 / 真机项 / 未实现**标注；状态实时值以 [acceptance-tasks.md](./acceptance-tasks.md) 勾选为准。
+> 规格属性与逐组对接（表附-1~附-8 已按组归档）见 [acceptance-tasks.md](./acceptance-tasks.md)；本文只讲覆盖度，不重复状态、不重复清单。
 
 ## 先看结论
 

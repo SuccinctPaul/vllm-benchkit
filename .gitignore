@@ -171,6 +171,9 @@ venv.bak/
 .docs-venv/
 .mkdocs-repo
 
+# 验收规格 PDF（外部交付件，不进仓库；本地如需直接放 config/vllm-xcheck/ 下）
+config/vllm-xcheck/*.pdf
+
 # mypy
 .mypy_cache/
 .dmypy.json
@@ -232,3 +235,5 @@ datasets/
 config/topology.yaml
 
 .venv-docs
+
+**/*.pdf

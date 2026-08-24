@@ -1,6 +1,6 @@
 # vllm-xcheck 验收子系统：薄脚本 / fail-closed / 确定性 / 隐私边界
 
-在「黑盒基准/剖析」（ADR-0001~0007 的 guide 玩法）之上，长出一个正式的验收执行系统 `vllm-xcheck`：把《V4.1 标准交付测试方案》（`config/vllm-xcheck/vLLM-HUST-standard-delivery-test-plan-V4.1.pdf`）落成一套**可实例化、可复现、fail-closed** 的执行链路（客户端负载引擎 + 判定 + 指标采集 + 成本口径 + 证据归档）。
+在「黑盒基准/剖析」（ADR-0001~0007 的 guide 玩法）之上，长出一个正式的验收执行系统 `vllm-xcheck`：把《V4.1 标准交付测试方案》落成一套**可实例化、可复现、fail-closed** 的执行链路（客户端负载引擎 + 判定 + 指标采集 + 成本口径 + 证据归档）。
 
 本篇把散在 features/design 正文里的子系统设计原则收口为决策记录，作为「为什么这么设计」的唯一权威。
 

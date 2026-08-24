@@ -1,7 +1,7 @@
 # 正式验收（acceptance）—— vllm-xcheck 子系统入口
 
 > 本文是 **vllm-xcheck 正式验收执行系统**（`acceptance/`）的子系统入口。全仓**唯一总入口、全局新手路线与名词**见 [../README.md](../README.md)；"这是什么/怎么跑"见 [../understand.md](../understand.md) 与 [../run.md](../run.md)。
-> 它把 `config/vllm-xcheck/` 配置层 + `src/` 执行层 + `scripts/` harness 整理成一套**可实例化、可复现、fail-closed** 的验收系统，对应 `vLLM-HUST-standard-delivery-test-plan-V4.1.pdf` 的表附-1~附-8。
+> 它把 `config/vllm-xcheck/` 配置层 + `src/` 执行层 + `scripts/` harness 整理成一套**可实例化、可复现、fail-closed** 的验收系统，规格覆盖见 [v41-coverage.md](./v41-coverage.md)，逐项任务见 [acceptance-tasks.md](./acceptance-tasks.md)。
 > 一句话玩法：**三层配置合成 profile → 独立 vllm serve + 客户端基准引擎 → 判定门禁 → 证据归档**。
 
 ## 先用大白话说：这是干嘛的
@@ -16,7 +16,7 @@
 
 ## 这套系统的真实价值（按《V4.1 方案》的需求讲）
 
-《V4.1 方案》要的是交易双方（交付方 / 验收方）能**就同一套办法、同一个口径，把"模型和服务的真实能力"对齐并留证**——但直接按 PDF 手做，会踩三个坑：指标算得不一致、结果无法复现、判定全凭感觉。**vllm-xcheck 就是把 PDF 的「要什么」翻译成「怎么算、怎么判、怎么留证」的自动执行器**，逐一消除这三个坑：
+《V4.1 方案》要的是交易双方（交付方 / 验收方）能**就同一套办法、同一个口径，把"模型和服务的真实能力"对齐并留证**——但直接手做，会踩三个坑：指标算得不一致、结果无法复现、判定全凭感觉。**vllm-xcheck 就是把《V4.1 方案》的「要什么」翻译成「怎么算、怎么判、怎么留证」的自动执行器**，逐一消除这三个坑：
 
 | 《V4.1方案》的需求 | 手写会踩的坑 | vllm-xcheck 怎么兑现 |
 |---|---|---|
@@ -34,7 +34,7 @@
 | **任务专家速成** | [task-expertise.md](./task-expertise.md) | 每条任务（A1–A4）的需求/目标、判定，以及「配置为什么这么设、改了会怎样」 | 想成为某条任务的配置专家、理解设计意图（读完 features 再读） |
 | **设计** | [design.md](./design.md) | 按模块划分的架构：四段式链路、每模块职责、数据流、依赖关系 | 想理解代码怎么组织、改代码前先看懂 |
 | **How to run** | [how-to-run.md](./how-to-run.md) | 怎么跑：前置、部署、起服务、跑验收/自测、看结果 | 第一次上手跑验收 |
-| **V4.1 覆盖度** | [v41-coverage.md](./v41-coverage.md) | V4.1 PDF 各表附的功能实现覆盖度（已实现/未实现/真机项） | 想核对「方案里要的东西我们做了没」 |
+| **V4.1 覆盖度** | [v41-coverage.md](./v41-coverage.md) | 验收需求各项功能的实现覆盖度（已实现/未实现/真机项） | 想核对「方案里要的东西我们做了没」 |
 | **配置参数** | [config-reference.md](./config-reference.md) | 配置文件（common/cells/precision/schema）每个参数的含义 | 想改/新增一个配置项 |
 | **任务清单** | [acceptance-tasks.md](./acceptance-tasks.md) | 按组 C/I/Q/M/A/K/D/S/Z 的逐项任务、做法与验收（进度打勾） | 想知道某项做到哪了、下一步做啥 |
 
