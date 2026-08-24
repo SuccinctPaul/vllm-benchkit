@@ -116,9 +116,9 @@
 > 目标：oracle/parser 与 client adapter 同仓发布并绑定 exact revision/hash（附-8 判定程序）。
 
 ### Q1 工具判定（BFCL V4）
-- [x] 做法：`name + arguments` 规范化比较（对参数排序/展开后比对）。
+- [x] 做法：工具名匹配（回执 `expected_tool_name`）；参数级比较需数据集提供 `expected_tool_args`，本期回执不携带。
 - 验收：同 64 例两次判定一致；工具成功率和 Schema 合法率计入 W8A8 资格（工具/结构化≥95%）。
-- 落地：`src/client/oracle.py` `evaluate_one`（kind=tool_*：name + 参数规范化比较）+ 自测 `q-tool-ok`。
+- 落地：`src/client/oracle.py` `evaluate_one`（kind=tool_*：工具名匹配）+ 自测 `q-tool-ok`。
 
 ### Q2 推理判定（GSM8K）
 - [x] 做法：数值答案抽取（固定抽取器），与参考答案比对。

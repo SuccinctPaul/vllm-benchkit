@@ -1,7 +1,7 @@
 """组 Q —— 质量 oracle / 判定程序（附-8 判定程序）。
 
 消费 C3 逐请求回执（receipts.jsonl），对每类输出做质量判定：
-  Q1 工具判定（BFCL V4）：name + arguments 规范化比较（参数排序/展开后比对）；
+  Q1 工具判定（BFCL V4）：工具名匹配（回执 expected_tool_name，见 evaluate_one）；
   Q2 推理判定（GSM8K）：数值答案抽取（固定抽取器）与参考答案比对；
   Q3 结构化判定（JSONSchemaBench）：按 JSON Schema Draft 2020-12 校验输出
      （disable_any_whitespace=false / disable_additional_properties=false 语义即不额外收紧）；
@@ -18,8 +18,6 @@ import json
 import re
 
 import jsonschema
-
-from client import common
 
 # Q5 资格阈值（附-8）
 W8A8_DROP_PP = 1.0          # 相对同源 FP16 成功率下降 ≤ 1pp
@@ -55,24 +53,6 @@ def _json_loads(text):
                         except ValueError:
                             break
     return None
-
-
-def normalize_tool_call(name, arguments):
-    """工具调用规范化：参数 dict 键排序 + JSON 稳定序列化（Q1 比较基础）。"""
-    if isinstance(arguments, str):
-        arguments = _json_loads(arguments) or arguments
-    if isinstance(arguments, dict):
-        args = common.canonical_json(arguments)
-    else:
-        args = common.canonical_json(arguments) if arguments else ""
-    return f"{name}({args})"
-
-
-def compare_tool_call(got_name, got_args, exp_name, exp_args):
-    """Q1 单次工具调用比较：name 精确 + arguments 规范化后相等。"""
-    if got_name != exp_name:
-        return False
-    return normalize_tool_call(got_name, got_args) == normalize_tool_call(exp_name, exp_args)
 
 
 def extract_gsm8k_answer(text):
@@ -167,11 +147,12 @@ def evaluate_one(cfg, rec):
                 q_errors.extend(r["errors"])
 
     elif kind.startswith("tool_"):
-        base["q_rule"] = "bfcl-name+args-normalized"
+        base["q_rule"] = "bfcl-name-match"
         calls = rec.get("output_tool_calls") or []
         if not calls:
             q_errors.append("无工具调用")
-        # 期望工具名：回执携带 expected_tool_name（正式测量由数据集注入）
+        # 期望工具名：回执携带 expected_tool_name（正式测量由数据集注入）；
+        # 参数级比较需要数据集提供 expected_tool_args，本期回执不携带（见 acceptance-tasks 组 Q1）
         exp = rec.get("expected_tool_name")
         if exp is not None:
             got_names = [c.get("name") for c in calls if isinstance(c, dict)]
