@@ -17,7 +17,12 @@ ROOT="$(cd "$HERE/.." && pwd)"
 PY="${VLLM_BENCHKIT_VENV:-$ROOT/.venv}/bin/python"
 source "$HERE/npu_env.sh"
 
-cmd="${1:?用法: msprof_reconcile.sh {collect|reconcile} ...}"; shift
+cmd="${1:-}"
+if [ -z "$cmd" ]; then
+  echo "用法: msprof_reconcile.sh {collect|reconcile} ..." >&2
+  exit 2
+fi
+shift
 case "$cmd" in
   collect)
     OUT="runs/a1-prof"

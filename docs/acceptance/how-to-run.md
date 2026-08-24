@@ -76,9 +76,10 @@ bash scripts/acceptance.sh stop a4-mt FP16
 无需真机即可验证组 C 各模块逻辑正确：
 
 ```bash
-python src/client/run.py --cell a4-mt --precision FP16 --selftest
-python src/client/run.py --cell a3-32k --precision FP16 --selftest
-python src/client/run.py --cell a1 --precision FP16 --selftest
+# --allow-missing：未跑过 prepare.sh subsets 的机器上，豁免缺数据集工件（仅离线自测）
+python src/client/run.py --cell a4-mt --precision FP16 --selftest --allow-missing
+python src/client/run.py --cell a3-32k --precision FP16 --selftest --allow-missing
+python src/client/run.py --cell a1 --precision FP16 --selftest --allow-missing
 python src/client/generate.py   # C1+C2 合同生成/自测
 ```
 
