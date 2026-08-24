@@ -1,4 +1,4 @@
-"""C5 A4 租户调度器（V4.1 附-7/附-8）。
+"""C5 A4 租户调度器（附-7/附-8）。
 
 四租户（dialogue/tool/reasoning/structured）共享单一服务，各 25% 输出 token 份额：
   - 混合到达序列：每租户请求速率 ∝ share / output_cap（output_cap=调度成本默认），

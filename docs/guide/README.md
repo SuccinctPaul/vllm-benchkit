@@ -52,5 +52,5 @@ uv sync
 - [../maintenance.md](../maintenance.md) —— 为什么能维护＆运行、改动自查
 - [official-capabilities.md](../official-capabilities.md) —— 官方能力清单与可增补项
 - [config/config.yaml](../../config/config.yaml) —— 参数默认配置
-- [config/vllm-xcheck/](../../config/vllm-xcheck/) —— V4.1 正式验收配置层（common + precision + cells + schema）
+- [config/vllm-xcheck/](../../config/vllm-xcheck/) —— 正式验收配置层（common + precision + cells + schema）
 - [docs/adr](../../docs/adr/) —— 架构决策记录（0001~0010）

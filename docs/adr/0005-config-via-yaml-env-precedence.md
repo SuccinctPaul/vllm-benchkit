@@ -1,4 +1,15 @@
-# 参数外置到 config/config.yaml，环境变量优先
+# 0005 参数外置到 config/config.yaml，环境变量优先
+
+> **决策摘要**：`bench.sh`/`profile.sh` 参数默认值收口到 `config/config.yaml`，读取按「环境变量 > YAML 默认」优先，用 venv 内 python+pyyaml 解析；脚本统一放 `scripts/`。
+
+| 元数据 | 值 |
+|--------|----|
+| **Status** | accepted |
+| **Date** | 2026-08-20 |
+| **Type** | architecture |
+| **Supersedes** | — |
+| **Related** | ADR-0006（与部署拓扑分层、键不重叠） |
+| **映射** | 通用运行参数（无单项门禁） |
 
 bench.sh / profile.sh 的参数默认值统一收口到 `config/config.yaml`，脚本统一放在 `scripts/`，读取采用「环境变量 > YAML 默认」的优先级；解析用 venv 里的 python + pyyaml。
 
@@ -6,4 +17,8 @@ bench.sh / profile.sh 的参数默认值统一收口到 `config/config.yaml`，�
 
 候选对比：单文件 config.yaml + 环境变量覆盖（所选）；多 profile / 分层多文件（结构重、合并逻辑复杂）；CLI `--set` 覆盖（多一层 CLI 解析）；外部 yq（额外安装）；纯 bash grep 解析（脆弱、不支持嵌套）。选最薄的一种：YAML 只承载默认值，临时覆盖仍走环境变量（含 `VLLM_BENCHKIT_CONFIG` 指定配置路径、`VLLM_BENCHKIT_RUNS` 指定 runs 目录、`ASCEND_TOOLKIT_SETENV` 等覆盖 CANN 环境路径），不引入 CLI 配置子命令。
 
-后果：默认值单点维护于 `config/config.yaml`；新增参数需同时改 config.yaml 与脚本内对应的 `: "${KEY:=${YAML_...:-}}"` 行；YAML 缺键时脚本变量为空、vllm 显式报错（不静默兜底）。
+后果：默认值单点维护于 config/config.yaml；新增参数需同时改 config.yaml 与脚本内对应的 `: "${KEY:=${YAML_...:-}}"` 行；YAML 缺键时脚本变量为空、vllm 显式报错（不静默兜底）。
+
+## 兑现回填（Verification）
+
+- ✅ **已兑现**：`bench.sh`/`profile.sh` 统一读 `config/config.yaml` 默认值 + 环境变量覆盖（含 `VLLM_BENCHKIT_CONFIG` 指定配置路径、`VLLM_BENCHKIT_RUNS` 指定 runs 目录、`ASCEND_TOOLKIT_SETENV` 覆盖 CANN 环境路径），未引入 CLI 配置子命令。

@@ -76,7 +76,7 @@ config/vllm-xcheck/
 
 ### 3.3 `server` —— 服务端参数
 
-**服务协议 / 拓扑**：`protocol`(openai)、`host`、`uvicorn_workers`、`tensor_parallel_size` / `pipeline_parallel_size` / `data_parallel_size` / `expert_parallel_size`（V4.1 均 =1，单张 910B2）、`serving_mode`(unified)、`pd_disaggregation`(false)、`replicas`、`distributed_executor_backend`(mp)、`dcp_comm_backend`(ag_rs)、`disable_custom_all_reduce`(true)、`cpu_binding_policy`(topo_affinity)。
+**服务协议 / 拓扑**：`protocol`(openai)、`host`、`uvicorn_workers`、`tensor_parallel_size` / `pipeline_parallel_size` / `data_parallel_size` / `expert_parallel_size`（均 =1，单张 910B2）、`serving_mode`(unified)、`pd_disaggregation`(false)、`replicas`、`distributed_executor_backend`(mp)、`dcp_comm_backend`(ag_rs)、`disable_custom_all_reduce`(true)、`cpu_binding_policy`(topo_affinity)。
 
 **SM 容量**（对延迟/吞吐影响最大，见 4.2）：
 - `gpu_memory_utilization`：GPU 内存利用率（KV 缓存容量上限）。

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A1-2 msprof 对账（V4.1 附-8/组 A1-2；真机项）。
+"""A1-2 msprof 对账（附-8/组 A1-2；真机项）。
 
 目标：把 mfu.py 的 effective_compute_spec v1 有效 FLOPs 与 msprof 采集的算子
 执行数据对账，验证误差≤3%（验收；真机 msprof 采集在 scripts/msprof_reconcile.sh）。

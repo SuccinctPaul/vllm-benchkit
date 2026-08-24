@@ -5,5 +5,5 @@ meta:
   precision: W8A8
 model:
   dtype: float16              # 计算中间仍以 float16 实现，仅权重/激活降 INT8
-  quantization: ascend        # V4.1 固定的 W8A8 量化后端
+  quantization: ascend        # 固定的 W8A8 量化后端
   served_suffix: w8a8

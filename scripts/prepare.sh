@@ -81,7 +81,7 @@ EOF
 # P4 数据/工件接入：下载 -> 规范化 -> 稳定排序取前 N -> hash manifest + 统一 registry(.registry.json)。
 # 每个子集都写 <name>.manifest.json；空 url 记 status=placeholder。registry 供 src/receipt.py 门禁消费。
 subsets() {
-  echo "[prepare] 整理 V4.1 固定数据子集（sha256(id||content) 稳定排序取前 N，表附-8）"
+  echo "[prepare] 整理固定数据子集（sha256(id||content) 稳定排序取前 N，表附-8）"
   "$PY" - "$ROOT/config/config.yaml" "$PREPARE_DATASET_DIR" <<'EOF'
 import hashlib
 import json
@@ -112,7 +112,7 @@ for s in subs:
     if not url:   # 已声明未接入：写占位 manifest，供 receipt 识别为 placeholder
         write_manifest(name, {"name": name, "status": "placeholder", "fixed_n": n,
                               "src_url": None, "materialized": False,
-                              "rule": "V4.1 固定子集占位：url 待填"})
+                              "rule": "固定子集占位：url 待填"})
         registry.append({"key": name, "status": "placeholder", "materialized": False, "fixed_n": n})
         print(f"[prepare] {name}: 未配置真实数据源（url 空），记录占位 manifest")
         continue
@@ -140,7 +140,7 @@ for s in subs:
         else:
             content = json.dumps(r, ensure_ascii=False)
         norm.append((cid, content))
-    # case_id 升序后按 sha256(id||content) 稳定排序，取前 N（V4.1 表附-8）
+    # case_id 升序后按 sha256(id||content) 稳定排序，取前 N（表附-8）
     picked = sorted(norm, key=lambda t: pick(*t))[:n]
     out = os.path.join(ddir, f"{name}.jsonl")
     hashes = []
@@ -153,7 +153,7 @@ for s in subs:
     write_manifest(name, {"name": name, "status": "ready", "fixed_n": n,
                           "total": len(norm), "src_url": url, "materialized": True,
                           "ordered_sha256": hashes,
-                          "rule": "case_id asc + sha256(id||content) stable sort, take first N (V4.1 表附-8)"})
+                          "rule": "case_id asc + sha256(id||content) stable sort, take first N (表附-8)"})
     registry.append({"key": name, "status": "ready", "materialized": True, "fixed_n": n, "total": len(norm)})
     print(f"  -> datasets/{name}.jsonl（{len(picked)}/{len(norm)}）+ {name}.manifest.json")
 

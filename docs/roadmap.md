@@ -37,7 +37,7 @@
 
 读 vllm core / vllm-ascend 源码，弄清每层「是谁的、做了什么、为什么」（调度器 / attention / kv-cache / 算子 / HCCL）。触发条件见下方 Gate-C 与 CONTEXT.md「拆解」条目。
 
-### Track 5 —— vllm-xcheck 正式验收执行层（V4.1）
+### Track 5 —— vllm-xcheck 正式验收执行层
 
 > 目标：把 `config/vllm-xcheck` 的配置层骨架升级为可执行正式验收的完整链路（客户端负载引擎 + 判定 + 指标采集 + 成本口径）。
 > 配置层（common / cells / precision + schema）已覆盖冻结表服务端参数（附-2/3/4）；本轨道补齐执行层。

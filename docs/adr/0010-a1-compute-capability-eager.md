@@ -1,4 +1,15 @@
-# A1 算力口径：MFU≥90% + 强制 eager（裸算力，禁图优化兜底）
+# 0010 A1 算力口径：MFU≥90% + 强制 eager（裸算力，禁图优化兜底）
+
+> **决策摘要**：A1（算力峰值）判定口径钉死为**主形状 MFU≥90%**，且测量时**强制关闭图优化**（`compile_mode: none` + `enforce_eager: true` + `cudagraph_mode: none`），使图捕获=0——开图优化等于"考试作弊"，MFU 不再诚实反映裸算力。
+
+| 元数据 | 值 |
+|--------|----|
+| **Status** | accepted |
+| **Date** | 2026-08-24 |
+| **Type** | tuning / standard |
+| **Supersedes** | — |
+| **Related** | ADR-0008（fail-closed 落点） |
+| **映射** | A1 算力考核 ≥90% |
 
 ## 决策
 
@@ -21,3 +32,7 @@ MFU 要看的是**裸算力**——硬件在不动用"加速技巧"时能不能�
 
 - 新增/调整算力测量参数先入 `schema.yaml` allowed 集。
 - "开图优化=作弊"是 A1 的硬约束，任何改动不得破坏 eager 强制。
+
+## 兑现回填（Verification）
+
+- ✅ **已兑现**：`scripts/a1_peak.sh` + `src/client/a1_peak.py` 落地（缺 ascend-dmi 时回退 torch-npu fp16 大矩阵乘取中位，注入 `VLLM_BENCHKIT_PEAK_FLOPS` 作 MFU 分母）；`scripts/msprof_reconcile.sh` 用于逐算子对账；eager 强制由 `compile_mode: none` / `enforce_eager: true` / `cudagraph_mode: none` 保证。

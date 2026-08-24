@@ -16,7 +16,7 @@
 | 验收配置字段契约 | [config/vllm-xcheck/schema.yaml](../config/vllm-xcheck/schema.yaml) | config-reference.md 的字段表 |
 | 验收任务明细与进度 | [acceptance/acceptance-tasks.md](./acceptance/acceptance-tasks.md) | features / v41-coverage / design 的状态 |
 | 通用运行参数默认值 | [config/config.yaml](../config/config.yaml) | guide/config-reference.md |
-| 为什么这么设计 | [adr/](./adr/)（0001–0010，只追加不改） | guide/design、acceptance/design 的"取舍" |
+| 为什么这么设计 | [adr/](./adr/)（0001–0011，只追加不改） | guide/design、acceptance/design 的"取舍" |
 | 术语/目标/边界 | [CONTEXT.md](../CONTEXT.md) | 各文档引出处 |
 
 **推论**：改配置先改 schema 白名单；改任务先改 acceptance-tasks；版本先改 topology。其余文档只做"指向"。
@@ -70,7 +70,7 @@ docs/
 ├── maintenance.md     ★（本文）为什么能维护＆运行：单一事实来源 + 同步规则 + 留痕
 ├── guide/             ▲黑盒工具细节：commands / config / output / how-to-run / design
 ├── acceptance/        ▲正式验收细节：features / design / how-to-run / config-ref / v41-coverage / tasks
-├── adr/               决策记录 0001–0010（只追加）
+├── adr/               决策记录 0001–0011（入口：adr/README.md；只追加）
 ├── official-capabilities.md   官方能力清单与可增补项
 └── roadmap.md                未来路线图
 ```

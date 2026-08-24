@@ -1,4 +1,4 @@
-"""C1 客户端合同模块：按 cell 生成 canonical request case 清单（V4.1 附-5/6/7）。
+"""C1 客户端合同模块：按 cell 生成 canonical request case 清单（附-5/6/7）。
 
 数据源：prepare.sh subsets 产出的固定子集（datasets/*.jsonl），按 manifest 的
 ordered_sha256 顺序循环，不随机重抽。同一 cell 两次生成字节一致：

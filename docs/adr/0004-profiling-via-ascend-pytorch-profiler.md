@@ -1,4 +1,15 @@
-# profiling 本期用 Ascend PyTorch Profiler（内置）
+# 0004 profiling 本期用 Ascend PyTorch Profiler（内置）
+
+> **决策摘要**：黑盒 profiling 统一走华为内置 Ascend PyTorch Profiler（`torch_npu.profiler`），由 `--profiler-config.profiler=torch` 开启、`/start_profile` `stop_profile` 触发；不引入 MS Service Profiler / msprobe（标记为 Todo 待拆解阶段评估）。
+
+| 元数据 | 值 |
+|--------|----|
+| **Status** | pending-verify |
+| **Date** | 2026-08-20 |
+| **Type** | architecture |
+| **Supersedes** | — |
+| **Related** | ADR-0011（同属真机运行侧事实） |
+| **映射** | 瓶颈定位（profiling 支撑排障，非验收门禁） |
 
 v0.18.0 黑盒阶段的 profiling 统一走华为内置的 Ascend PyTorch Profiler（`torch_npu.profiler`），由 vLLM 的 `--profiler-config.profiler=torch` 开启、`/start_profile` `stop_profile` 接口触发。
 
@@ -9,3 +20,8 @@ v0.18.0 黑盒阶段的 profiling 统一走华为内置的 Ascend PyTorch Profil
 待核实（P0）：`--profiler-config` 的合法传法有点号记法（`--profiler-config.profiler=torch`）与 JSON blob（`{"profiler":"torch",...}`，profile.sh 当前所用）两种表述，v0.18.0 实际接受哪一种须在装好环境后以 `vllm serve --help` / canonical 源码实测为准，并回填本文与 profile.sh，不臆造。
 
 > 核实结果与后续语法对账，收敛到单一权威 [official-capabilities.md「已知冲突/待核实」](../official-capabilities.md)（本 ADR 仅存原始判断，实测回填以官方权威处为准）。
+
+## 兑现回填（Verification）
+
+- ⏳ **待核实（P0）**：`--profiler-config` 的合法传法（点号记法 `--profiler-config.profiler=torch` vs JSON blob）在 v0.18.0 实际接受哪一种，须在装好环境后以 `vllm serve --help` / canonical 源码实测。
+- 🔗 实测回填收敛到 [official-capabilities.md「已知冲突/待核实」](../official-capabilities.md)，本 ADR 只存原始判断、不另维护清单。

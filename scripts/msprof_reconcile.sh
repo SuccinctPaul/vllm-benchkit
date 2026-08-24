@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# A1-2 msprof 算子对账（V4.1 附-8/组 A1-2；真机项）。
+# A1-2 msprof 算子对账（附-8/组 A1-2；真机项）。
 # 子命令:
 #   collect --out DIR -- <cmd...>          在 msprof 下运行 <cmd>，采集 AICore 算子数据
 #                                           （--ai-core=on --export=on，原始产物全保留）

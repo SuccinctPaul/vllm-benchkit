@@ -32,7 +32,7 @@
 ./scripts/deploy.sh check
 ```
 
-## 2. 准备数据子集（V4.1 固定子集）
+## 2. 准备数据子集（固定子集）
 
 ```bash
 # 物化 datasets/*.jsonl + *.manifest.json + .registry.json（供 receipt 门禁）

@@ -53,7 +53,7 @@ common/cells/precision (yaml)
 
 ### 组 C —— 客户端负载引擎（执行层核心）
 
-| 模块（文件） | 职责 | 对应 V4.1 |
+| 模块（文件） | 职责 | 对应附录 |
 |------------|------|----------|
 | [cases.py](../../src/client/cases.py) | C1 canonical 请求清单生成（对话/工具/推理/结构化/长文本），确定性 | 附-5 |
 | [arrival.py](../../src/client/arrival.py) | C2 Poisson(seed=0) 到达序列，drain/cooldown，绑定参数哈希 | 附-8 |
@@ -130,7 +130,7 @@ common/cells/precision (yaml)
 ## 7. 当前状态与遗留
 
 - **已达标**：A4-MT-FP16-PC verify19 公平/隔离/SLO/容量全 PASS；C/Q/M/I/K/Z 组离线自测全过；A1 峰值真机落地。**逐项数值与轮次演化见 [acceptance-tasks.md 组 C5](./acceptance-tasks.md#L69)（已达标状态的唯一权威，此处不重复）。**
-- **正式测量前待补**（对应 V4.1 合规审计）清单见 [features.md §7](./features.md)（此处不重复，避免多处漂移）。
+- **正式测量前待补**（对应合规审计）清单见 [features.md §7](./features.md)（此处不重复，避免多处漂移）。
 - **数据口径**：同 [features.md §7「数据口径」](./features.md#L73)（唯一权威，此处不重复）。
 
 > 明细与实时勾选见 [acceptance-tasks.md](./acceptance-tasks.md)、[v41-coverage.md](./v41-coverage.md)（本次由 design-overview.md 合并而来，避免两篇重复）。

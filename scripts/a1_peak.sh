@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# A1-1 峰值 FLOPs 分母采集（V4.1 附-8/组 A1-1；真机项）。
+# A1-1 峰值 FLOPs 分母采集（附-8/组 A1-1；真机项）。
 # 独占 910B2 测量 FP16 峰值，落 runs/a1-peak.json，并打印注入环境变量。
 # 来源：优先 ascend-dmi（检测到则指引人工执行并回填）；缺省 torch_npu fp16 matmul
 #       实测（ascend-dmi 同原理；910B2 单机一般不带 ascend-dmi）。

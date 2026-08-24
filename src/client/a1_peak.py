@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""A1-1 峰值 FLOPs 分母采集（V4.1 附-8/组 A1-1）。
+"""A1-1 峰值 FLOPs 分母采集（附-8/组 A1-1）。
 
 用途：真机上独占 910B2 测量 FP16 峰值算力，供 mfu.mfu_summary 的峰值分母
 （经 `VLLM_BENCHKIT_PEAK_FLOPS` 环境变量注入，见 mfu.peak_flops_per_s）。

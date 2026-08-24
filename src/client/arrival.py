@@ -1,6 +1,6 @@
 """C2 到达序列生成器（generator=vllm-xcheck-poisson-v1）。
 
-规则（V4.1 附-8 到达背压）：
+规则（附-8 到达背压）：
   - seed=0；每个 rate 独立 Random(0)，inter-arrival ~ Exp(rate)，逐率生成完整到达序列；
   - request_cap = ceil(rate × per_rate_s)，与 cells 声明的 caps 必须逐项一致（fail-closed）；
   - clock=monotonic：nominal_ts 以单调时钟为基准，rate 段间 drain/cooldown=60s；

@@ -16,7 +16,7 @@
   python src/acceptance.py --list                 # 枚举全部 15 个正式 profile
 注意：argv 为保守映射（json 序列化 Value 只做事先约定的标志），须在目标机上用
 `vllm serve --help` 逐项对账；ignore_eos/logprobs/max_tokens 属客户端请求字段，
-「严禁渲染成 serve CLI 参数」（V4.1 表附-5），只进 effective，不进 argv。
+「严禁渲染成 serve CLI 参数」（表附-5），只进 effective，不进 argv。
 """
 import argparse
 import json
@@ -126,7 +126,7 @@ def model_server_argv(cfg, model_ref):
         ("--uvicorn-log-level", server.get("log_level")),
         ("--host", server.get("host")),
         # engine_seed 必须经 CLI 显式下发（表附-2：engine_seed=0；receipt 侧已记账），
-        # 不依赖 serve 默认，保证复现锚点见 V4.1 表附-8。
+        # 不依赖 serve 默认，保证复现锚点见表附-8。
         ("--seed", server.get("engine_seed")),
     ]
     flags = [(f, v) for f, v in pairs if v is not None]

@@ -17,7 +17,7 @@
 - [docs/official-capabilities.md](./docs/official-capabilities.md) —— 官方能力清单与可增补项（复用官方，少造轮子）
 - [docs/roadmap.md](./docs/roadmap.md) —— 未来路线图（先做性能对比，达标后拆解）
 - [config/config.yaml](./config/config.yaml) —— 运行参数默认配置（环境变量优先，见 ADR-0005）
-- [config/vllm-xcheck/](./config/vllm-xcheck/) —— V4.1 正式验收配置层（common + precision + cells + schema）
+- [config/vllm-xcheck/](./config/vllm-xcheck/) —— 正式验收配置层（common + precision + cells + schema）
 - [docs/adr](./docs/adr/0001-use-vllm-bench-as-benchmark-driver.md) —— 架构决策记录
   - `0001` 用 `vllm bench` 当基准驱动
   - `0002` 用 uv 建独立环境，不继承预装环境

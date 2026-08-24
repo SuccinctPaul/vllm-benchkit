@@ -1,5 +1,5 @@
 # vllm-xcheck common.yaml —— A1—A4 共同基线（表附-2 服务端 + 表附-4 env + 表附-5 采样）。
-# 本层只放 V4.1 冻结的共同值；cells/<cell>.yaml 做任务专属覆盖，precision/<p>.yaml 做精度 overlay。
+# 本层只放冻结的共同值；cells/<cell>.yaml 做任务专属覆盖，precision/<p>.yaml 做精度 overlay。
 # 属「软件级参数」泛化：不含机器名/仓库 URL/revision 具体值（隐私边界约定），
 # 具体 revision/容器 digest 由实例化方在 config/（.gitignore）里填。
 meta:

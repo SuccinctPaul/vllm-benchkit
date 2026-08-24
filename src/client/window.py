@@ -1,4 +1,4 @@
-"""C6 A3 窗口分析器（V4.1 附-8 A3 专项）。
+"""C6 A3 窗口分析器（附-8 A3 专项）。
 
 closed-loop、concurrency=1、总上下文 32768 = 渲染后输入 30720 + 输出 2048：
   - run_closed_loop：warmup_s 预热（不计量）→ measure_s 计量，串行执行同一业务长文本

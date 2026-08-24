@@ -10,7 +10,7 @@
 这个仓库是做 **vLLM Ascend 基准与验收**的。它有两档用力程度：
 
 - **① 黑盒冒烟**（快、探索）：跑官方 bench / profile，看吞吐延迟、对比版本、定位瓶颈 —— 细节在 `guide/`。
-- **② 正式验收**（严、留证）：按《V4.1 标准交付测试方案》跑 A1–A4，判通过与归档证据 —— 细节在 `acceptance/`。
+- **② 正式验收**（严、留证）：按《标准交付测试方案》跑 A1–A4，判通过与归档证据 —— 细节在 `acceptance/`。
 
 二者**共用同一根树干的顶层三行**：vLLM core（引擎）、vllm-ascend（NPU 后端）、Ascend PyTorch Profiler（profiling）。先弄懂它们是谁、出问题查谁，再往下走：见 [understand.md](./understand.md)。
 
@@ -31,10 +31,10 @@
 | **这是什么** | [understand.md](./understand.md) | 仓库干嘛的、两档玩法、三层归属、四条硬约束 |
 | **怎么跑** | [run.md](./run.md) | 装环境 → 冒烟 → 验收，一页串完 |
 | **黑盒冒烟** | [guide/README.md](./guide/README.md) | bench/profile 命令、参数、输出怎么读（入口） |
-| **正式验收** | [acceptance/README.md](./acceptance/README.md) | A1–A4、V4.1 覆盖度、配置参数、任务清单（入口） |
+| **正式验收** | [acceptance/README.md](./acceptance/README.md) | A1–A4、验收覆盖度、配置参数、任务清单（入口） |
 | **设计与实操实现** | [acceptance/design.md](./acceptance/design.md) | 按模块划分的架构：四段式、每个模块、依赖、取舍、现状 |
 | **为什么能维护/运行** | [maintenance.md](./maintenance.md) | 单一事实来源、同步规则、全链路留痕、改动自查 |
-| **架构决策** | [adr/](./adr/) | 0001–0010：每个"为什么这么设计"的记录 |
+| **架构决策** | [adr/](./adr/) | 决策地图 + 0001–0011：每个"为什么这么设计"的记录 |
 | **官方能力** | [official-capabilities.md](./official-capabilities.md) | 官方 `vllm bench` 能做/不能做什么 |
 | **路线图** | [roadmap.md](./roadmap.md) | 未来要做的事与阶段门 |
 

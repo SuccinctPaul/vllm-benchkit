@@ -1,6 +1,6 @@
-# V4.1 覆盖度
+# 验收覆盖度
 
-> 本文回答「**V4.1 方案里要的东西，我们做了没**」。逐组按**已实现 / 真机项 / 未实现**标注；状态实时值以 [acceptance-tasks.md](./acceptance-tasks.md) 勾选为准。
+> 本文回答「**验收方案里要求的东西，我们做了没**」。逐组按**已实现 / 真机项 / 未实现**标注；状态实时值以 [acceptance-tasks.md](./acceptance-tasks.md) 勾选为准。
 > 规格属性与逐组对接（表附-1~附-8 已按组归档）见 [acceptance-tasks.md](./acceptance-tasks.md)；本文只讲覆盖度，不重复状态、不重复清单。
 
 ## 先看结论
@@ -87,6 +87,6 @@
 - ✅ A1-1 峰值真机实测（数值见 acceptance-tasks 组 A）。
 - 🟡 A1-2 msprof 对账与 K1 功耗/资产随正式 A1–A4 服务器验证完成。
 
-## 正式测量前待补（V4.1 合规审计）
+## 正式测量前待补
 
 清单见 [features.md §7「正式测量前待补」](./features.md)（此处不重复，避免多处漂移）；与本文件组 S 的状态差异以 [acceptance-tasks.md](./acceptance-tasks.md) 勾选为准。

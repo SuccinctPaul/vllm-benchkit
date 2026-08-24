@@ -10,7 +10,7 @@
 ```
 
 - **#1/ #2** 是随时可跑的基础玩法，用在日常验证、版本对比、定位瓶颈（见 [guide/](./guide/README.md)）。
-- **#3** 是严格验收，跑 V4.1 的 A1–A4，判通过与留证据（见 [acceptance/](./acceptance/README.md)）。
+- **#3** 是严格验收，跑验收方案的 A1–A4，判通过与留证据（见 [acceptance/](./acceptance/README.md)）。
 
 ## 1. 前置与安装（一次性）
 
@@ -52,9 +52,9 @@ uv sync
 
 命令怎么选、参数怎么配、结果怎么读：见 [guide/how-to-run.md](./guide/how-to-run.md)、[guide/commands.md](./guide/commands.md)、[guide/output.md](./guide/output.md)。
 
-## 3. 正式验收（acceptance，V4.1 A1–A4）
+## 3. 正式验收（acceptance，A1–A4）
 
-起独立的 vLLM 服务，用客户端引擎按 V4.1 跑测量、判门禁、归档证据。完整操作（部署/数据子集/起服务/跑客户端/收指标/停服务/离线自测/常见坑）见 [acceptance/how-to-run.md](./acceptance/how-to-run.md)，这里只讲 A4 的完整流程图，其余 cell 类似。
+起独立的 vLLM 服务，用客户端引擎按验收方案跑测量、判门禁、归档证据。完整操作（部署/数据子集/起服务/跑客户端/收指标/停服务/离线自测/常见坑）见 [acceptance/how-to-run.md](./acceptance/how-to-run.md)，这里只讲 A4 的完整流程图，其余 cell 类似。
 
 > **跑之前先花 30 秒看 [acceptance/how-to-run.md §8 常见坑](./acceptance/how-to-run.md#L106)**——里面有两个不踩必翻车：`--model-ref` 要带组织前缀（`Qwen/...`）才能命中离线缓存；serve 不接受 `--compile-mode`/`--cudagraph-mode`（设 `VLLM_BENCHKIT_SKIP_GRAPH_ARGS=1`）。
 

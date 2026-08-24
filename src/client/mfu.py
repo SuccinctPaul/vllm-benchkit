@@ -1,4 +1,4 @@
-"""C7 A1 闭环算力口径：effective_compute_spec v1 有效 FLOPs + MFU（V4.1 附-8/组 A）。
+"""C7 A1 闭环算力口径：effective_compute_spec v1 有效 FLOPs + MFU（附-8/组 A）。
 
 口径（组 A1-2 v1）：
   - MatMul 按 2MNK；BatchMatMul 逐批求和；
