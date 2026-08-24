@@ -49,4 +49,4 @@ BENCH_DATASET=sharegpt BENCH_DATASET_PATH=... ./scripts/bench.sh serve  # 换数
 
 ## 3. 参数怎么生效（装配链路）
 
-`src/getconf.py` 把 YAML 拍平为 `YAML_*` 环境变量，脚本再用 `: "${KEY:=${YAML_...:-}}"` 合并出最终值，然后组装官方 vllm 命令。详细数据流见 [design.md](./design.md#1-数据流与优先级)。
+`src/getconf.py` 把 YAML 拍平为 `YAML_*` 环境变量，脚本再用 `: "${KEY:=${YAML_...:-}}"` 合并出最终值，然后组装官方 vllm 命令。详细数据流见 [design.md §1](./design.md#L5)。

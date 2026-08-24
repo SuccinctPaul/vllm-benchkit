@@ -1,0 +1,8 @@
+# precision/fp16.yaml —— FP16 精度 overlay（表附-3 / 表附-8）。
+# 覆盖 model 的 dtype/quantization，并提供 served_name 用 {precision} 后缀。
+meta:
+  precision: FP16
+model:
+  dtype: float16
+  quantization: null          # FP16 源工件（A1 固定；A2—A4 作为 FP16 控制线）
+  served_suffix: fp16         # served_model_name 的 {precision} 展开值

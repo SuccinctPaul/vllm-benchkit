@@ -36,7 +36,7 @@
 
 - 延迟类指标（TTFT/TPOT/ITL/E2EL）各带 mean/median/std/percentiles；
 - 离线 `throughput` 模式输出吞吐（tokens/s）等，无延迟维度；
-- 三个子命令的核心指标差异见 [commands.md](./commands.md#2-benchsh-子命令)。
+- 三个子命令的核心指标差异见 [commands.md §2](./commands.md#L14)。
 
 ### 2.2 profile（Ascend PyTorch Profiler）——微观明细
 
@@ -59,8 +59,8 @@
 2. **关键指标非零**：throughput > 0、TTFT/ITL 有限（不超时、不 NaN/Inf）；
 3. **日志无 NPU 报错**（无 ascend/torch_npu 相关错误）。
 
-判定顺序见 [how-to-run.md](./how-to-run.md#4-p0-验收黑盒跑通)。
+判定顺序见 [how-to-run.md §4](./how-to-run.md#L94)。
 
 ## 4. 待核实项
 
-v0.18.0 实测输出的字段名与 `profile.sh analyse` 打印格式、`runs/*.json` 的字段结构，装好环境后回填（同 [ADR-0004](../adr/0004-profiling-via-ascend-pytorch-profiler.md) 待核实项）。
+`runs/*.json` 字段结构、`profile.sh analyse` 打印格式等**输出口径核实收敛到单一权威**：[official-capabilities.md「已知冲突/待核实」](../official-capabilities.md)（同 [ADR-0004](../adr/0004-profiling-via-ascend-pytorch-profiler.md) 指向）。装好环境后实测回填仅在官方权威处进行，本文件不另行维护清单。

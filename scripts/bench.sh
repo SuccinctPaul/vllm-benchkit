@@ -98,6 +98,7 @@ throughput() {
   fi
   [ -n "$BENCH_DATASET_PATH" ] && cmd+=( --dataset-path "$BENCH_DATASET_PATH" )
   [ -n "$BENCH_LOAD_FORMAT" ] && cmd+=( --load-format "$BENCH_LOAD_FORMAT" )
+  [ -n "$BENCH_GPU_UTIL" ] && cmd+=( --gpu-memory-utilization "$BENCH_GPU_UTIL" )
   cmd+=( --output-json "$LOG.json" )   # v0.18.0 移除了 --save-result/--result-dir，改用 --output-json
   echo "[bench] $ ${cmd[*]}"
   "${cmd[@]}" 2>&1 | tee "$LOG"

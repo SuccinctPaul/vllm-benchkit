@@ -1,0 +1,9 @@
+# precision/w8a8.yaml —— W8A8（INT8 weight-activation）精度 overlay（表附-3 / 表附-8）。
+# 由固定源 FP16 工件量化生成，为不可变交付工件；量化配置/分片 hash 由测试资产包提供。
+# W8A8 资格：相对同源 FP16 质量下降均 ≤1pp；Schema 合法率 100%；工具/结构化成功 ≥95%。
+meta:
+  precision: W8A8
+model:
+  dtype: float16              # 计算中间仍以 float16 实现，仅权重/激活降 INT8
+  quantization: ascend        # V4.1 固定的 W8A8 量化后端
+  served_suffix: w8a8

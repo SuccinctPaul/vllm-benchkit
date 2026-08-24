@@ -2,7 +2,7 @@
 
 本文只回答一件事：**怎么把 benchmark 和 profile 跑起来**。命令行功能见 [commands.md](./commands.md)，参数怎么配见 [config-reference.md](./config-reference.md)，跑完怎么看结果见 [output.md](./output.md)。
 
-跑之前先选对命令：三个基准子命令的差异总览如下（详细说明见 [commands.md](./commands.md#2-benchsh-子命令)）。
+跑之前先选对命令：三个基准子命令的差异总览如下（详细说明见 [commands.md §2](./commands.md#L14)）。
 
 | 维度 | `serve`（在线基准） | `throughput`（离线吞吐） | `latency`（离线延迟） |
 |------|--------------------|-------------------------|----------------------|
@@ -23,6 +23,28 @@
 | CANN | 9.0.0 | [CONTEXT.md](../../CONTEXT.md) |
 | 代码源 | `config/topology.yaml` 的 `dir`/`repos` 钉的 `vllm`/`vllm-ascend` @ `releases/v0.18.0` | [topology.yaml](../../config/topology.yaml) / [ADR-0003](../adr/0003-canonical-source-repos.md) |
 | 环境 | uv 建的 `.venv`（torch 2.9.0 / torch-npu 2.9.0.post2） | [ADR-0002](../adr/0002-manage-environment-with-uv.md) |
+
+### 1.0 机器层面基础工具链（需手动装，deploy.sh 假定已就位）
+
+`deploy.sh` 假定目标机已具备这些**机器层面的地基**，本仓库不自动安装；全新裸机上要先用 `scripts/bootstrap.sh` 补齐或手工装齐：
+
+| 工具 | 用途（为什么必需） | 默认安装方式 |
+|------|--------------------|-------------|
+| `git` | 拉取/切换 vllm、vllm-ascend（`deploy.sh` clone/fetch/checkout） | 发行版包 |
+| `curl` | [可选] 下载 uv 官方安装器 | 发行版包 |
+| `gcc` / `g++` / `make` | 编译 vllm-ascend / numba / eplb 等 C/C++ 依赖 | 发行版包 |
+| `python3.11` | `uv venv --python 3.11` 需要（`deploy.sh` 建 .venv 的版本） | 发行版包/官方 |
+| `uv` | 建 venv 与 pip 安装（`deploy.sh` + `uv sync` 都靠它） | 官方安装器（`~/.local/bin`） |
+| CANN 9.0.0 + NPU 驱动 | vllm-ascend 运行前提；`npu_env.sh` 只 source 已装好的 set_env.sh | **必须手工安装**（华为官方包，root） |
+
+> **强烈建议用 `scripts/bootstrap.sh`**：一条命令检查/补齐除 CANN 外的全部基础工具链（它不装 CANN，只检测并提示手工装，因为 CANN 需 root + 华为安装包，机型/版本各异不适合自动装）。
+
+```bash
+# 只读检查还缺什么（不安装）
+./scripts/bootstrap.sh check
+# 补齐基础工具链（需 root 装系统包；uv 装到用户目录）
+./scripts/bootstrap.sh
+```
 
 ## 2. 安装（一次性）
 
@@ -52,7 +74,7 @@ BENCH_DATASET=sharegpt BENCH_DATASET_PATH=/path/to/SampleShareGPTData.jsonl ./sc
 ./scripts/bench.sh latency
 ```
 
-命令差异（serve / throughput / latency 选哪个）见 [commands.md](./commands.md#2-benchsh-子命令) 的对照表。
+命令差异（serve / throughput / latency 选哪个）见 [commands.md §2](./commands.md#L14) 的对照表。
 
 ### 3.2 profiling
 
@@ -89,7 +111,7 @@ ASCEND_RT_VISIBLE_DEVICES=0,1 ./scripts/bench.sh serve
 VLLM_NOTES_RUNS=/tmp/my-runs ./scripts/profile.sh serve
 ```
 
-优先级与全部可覆盖键见 [config-reference.md](./config-reference.md#2-覆盖机制环境变量--yaml)。
+优先级与全部可覆盖键见 [config-reference.md §2](./config-reference.md#L28)。
 
 ## 4. P0 验收（黑盒跑通）
 
@@ -103,4 +125,4 @@ VLLM_NOTES_RUNS=/tmp/my-runs ./scripts/profile.sh serve
 
 ## 5. 待核实项
 
-`vllm bench serve --help`（random 数据集是否受支持）、`vllm bench latency --help`（`--batch-size`/`--save-result`/`--result-dir` 真实语法）、`vllm serve --help`（`--profiler-config` 真实语法）——装完环境后实测并回填 [ADR-0004](../adr/0004-profiling-via-ascend-pytorch-profiler.md) 与 [commands.md](./commands.md) 待核实项。
+官方 flag 语法/冲突核实**收敛到单一权威**：[official-capabilities.md「已知冲突/待核实」](../official-capabilities.md)（含 `--profiler-config`、`--batch-size`/`--save-result`/`--result-dir` 等）。装好环境后实测回填**仅在官方权威处**进行，本文件与 [commands.md](./commands.md)、[ADR-0004](../adr/0004-profiling-via-ascend-pytorch-profiler.md) 不另行维护待核实清单（避免多处漂移）。

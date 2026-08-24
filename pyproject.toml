@@ -14,6 +14,7 @@ dependencies = [
     "torch==2.9.0",
     "torch-npu==2.9.0.post2",
     "pyyaml",   # src/getconf.py / src/gettopo.py 解析 config/*.yaml
+    "httpx",    # src/client/executor.py：OpenAI 兼容流式客户端（SSE 逐 token 计时）
 ]
 
 # 说明：vllm / vllm-ascend 的可编辑安装及其传依赖（含 triton-ascend==3.2.1、以及

@@ -1,0 +1,78 @@
+# cells/a4-mt.yaml —— A4 多租户成本（表附-3/表附-7）。
+# 四租户（dialogue/tool/reasoning/structured）共享单一服务，各 25% 输出 token 份额。
+# global_load = 0.70 × B0-FP16 三次中位最大 SLO 合规混合输出率。
+meta:
+  cell: a4-mt
+  profile: A4-MT-{precision}-PC
+  precisions: [FP16, W8A8]
+  endpoint: /v1/chat/completions
+  api: chat
+
+model:
+  family: Qwen2.5-14B-Instruct
+  served_name: qwen2.5-14b-instruct-{precision}
+
+server:
+  gpu_memory_utilization: 0.85
+  # max_num_seqs 16→32→48→36：verify17(48) 负优化——global=48 高并发引发更多
+  # prefill/decode 抢占，tpot_p99 全面升高；且 capture 自动扩到 48。
+  # 复核 vllm-ascend 源码：日志 "maximum supported batch sizes for ACL graph: 36"
+  # 指 HCCL stream 预算下最多可捕获 36 个图形状（shape 数上限），非 batch 上限；
+  # 本配置 8 个 capture 形状远小于 36，无 ACL 调整。真正决定峰值延迟的是
+  # max_num_seqs（并发天花板）与 capture 覆盖是否含峰值 batch。
+  # 故取 36：capture 显式扩到 36 覆盖峰值 batch（见 capture_sizes），
+  # per_tenant=9×4=36 与 max_num_seqs 匹配；隔离基线解除 per-tenant 限流后
+  # 单租户可独占至 36 并发，与混合负载同并发天花板对比（附-8 K2 公平口径）。
+  # KV 核算（14B FP16 + 0.85×64GB ≈112k tokens KV）：混合 36 并发实际需求 ~17k tokens，充足。
+  max_num_seqs: 36
+  max_num_batched_tokens: 16384
+  enable_prefix_caching: true
+  enable_chunked_prefill: true
+  capture_sizes: [1, 2, 4, 8, 16, 24, 32, 36]
+  compile_mode: vllm_compile
+  enforce_eager: false
+  cudagraph_mode: FULL_DECODE_ONLY
+  cudagraph_num_of_warmups: 1
+  auto_tool_choice: true
+
+sampling:
+  ignore_eos: false            # A4
+  max_tokens: null
+  logprobs: false
+
+workload:
+  mode: mixed                  # B0-FP16 混合容量扫描 + 70% 正式混合负载
+  dataset: mixed
+  # 四租户共享单一服务，各 25% 输出 token 份额（附-7）。
+  # 调度成本与 max_tokens 上限分离：
+  #   output_cap = 每请求 max_tokens 上限（约束输出长度，防止不受控）；
+  #   cost_len   = 期望输出长度/请求（调度成本，request_rate = token_rate×share/cost_len）。
+  # cost_len 取实测平均输出长度（= request_rate×cost_len 下实际输出份额收敛 25%）；
+  # 本值按真机 B0 混合扫描实测校准（Qwen2.5-14B+合成回退：dialogue 12.8 / tool 4.9 /
+  # reasoning 2.4 / structured 22.9）；正式测量换真实数据集后须按实测重校。
+  # isolation_token_rate：隔离 B0-FP16 基线的 per-tenant token_rate（缺省回退 b0_max）。
+  # 基线测量语义（附-8 K2，verify18 复核）：基线 request_rate = token_rate/cost_len；
+  # cost_len 大的租户（dialogue/structured）在 b0_max=192 下请求率过低，基线并发仅
+  # ~17，达不到 max_num_seqs=36 满并发，基线 p99 被低估 → 相对隔离判定失真（verify18
+  # structured tpot 1.36× 假 FAIL）。本键把基线 token_rate 提到该租户 solo 满载 36 并发
+  # 的水平，使四租户基线同为 worst-case solo p99（tool/reasoning 在 192 已顶满，维持）。
+  tenants:
+    dialogue: {share: 0.25, output_cap: 256, cost_len: 13, isolation_token_rate: 405}
+    tool: {share: 0.25, parallel_tool_calls: true, send_tools: true, output_cap: 256, cost_len: 5, isolation_token_rate: 192}   # 附-5：tool 租户显式发 tools
+    reasoning: {share: 0.25, output_cap: 512, cost_len: 2, isolation_token_rate: 192}
+    structured: {share: 0.25, output_cap: 512, cost_len: 23, isolation_token_rate: 504}
+  b0_capacity_points: [32, 64, 96, 128, 192, 256, 384]   # B0-FP16 输出 token/s
+  global_load_factor: 0.70
+  per_tenant_concurrency: 9      # 与 max_num_seqs=36 匹配（4 租户 × 9 = 36）；隔离基线 full_load 不受此限
+  global_concurrency: 36
+  slo:                      # 附-8 绝对 SLO（ms；A2 逐租户同组阈值；A4 延迟判定改用相对隔离 ≤1.25×，绝对阈值仅作记录）
+    ttft: {mean_ms: 1000, p95_ms: 2000, p99_ms: 4000}
+    tpot: {mean_ms: 40, p95_ms: 60, p99_ms: 80}
+  timeouts:
+    warmup_s: 300              # 5min
+    measure_s: 1800            # 30min
+    per_point_s: 600
+    point_gap_s: 60
+    formal_s: 3600
+    isolation_s: 300           # 隔离 B0-FP16 基线：每租户单租户独自承担全部 token_rate（share=1.0，p99 基线证据）
+  primary_metric: "cost per 1e6 successful output tokens (full-lifecycle)"

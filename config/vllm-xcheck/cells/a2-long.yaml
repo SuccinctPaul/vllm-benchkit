@@ -1,0 +1,54 @@
+# cells/a2-long.yaml —— A2 长上下文容量（表附-3/表附-6）。
+# 仅报告容量边界、错误率、HBM/KV；16×8192+512、16×16384+1024。
+meta:
+  cell: a2-long
+  profile: A2-LONG-{precision}
+  precisions: [FP16, W8A8]
+  endpoint: /v1/chat/completions
+  api: chat
+
+model:
+  family: Qwen2.5-14B-Instruct
+  served_name: qwen2.5-14b-instruct-{precision}
+
+server:
+  gpu_memory_utilization: 0.85
+  max_num_seqs: 4
+  max_num_batched_tokens: 16384
+  enable_prefix_caching: false
+  enable_chunked_prefill: true
+  capture_sizes: [1, 2, 4]
+  compile_mode: vllm_compile
+  enforce_eager: false
+  cudagraph_mode: FULL_DECODE_ONLY
+  cudagraph_num_of_warmups: 1
+
+sampling:
+  ignore_eos: false
+  max_tokens: null
+  logprobs: false
+
+workload:
+  mode: poisson
+  dataset: long                # A2 固定 32 例（2 档形状各 16）
+  dataset_fixed:
+    - {count: 16, input_len: 8192, output_len: 512}
+    - {count: 16, input_len: 16384, output_len: 1024}
+  rates: [0.05, 0.1, 0.2, 0.4]
+  max_concurrency: 4
+  caps: [30, 60, 120, 240]
+  timeouts:
+    warmup_s: 300              # 附-6 共同执行法：预热 5min
+    capacity_s: 7200
+    per_rate_s: 600
+    per_request_s: 1800
+    drain_cooldown_s: 60
+  primary_metric: "capacity boundary + error rate + HBM/KV usage"
+  slo:                      # 附-8 A2 long 绝对 SLO（ms，按输入档）
+    shapes:
+      "8192":
+        ttft: {mean_ms: 8000, p95_ms: 12000, p99_ms: 16000}
+        tpot: {mean_ms: 40, p95_ms: 60, p99_ms: 80}
+      "16384":
+        ttft: {mean_ms: 16000, p95_ms: 24000, p99_ms: 32000}
+        tpot: {mean_ms: 40, p95_ms: 60, p99_ms: 80}

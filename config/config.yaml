@@ -34,3 +34,25 @@ prepare:
   workload_num: 16            # 负载请求数（对应 $PREPARE_WORKLOAD_NUM）
   workload_len: 256           # 每条 prompt 目标词数 ≈ token 数（对应 $PREPARE_WORKLOAD_LEN）
   workload_seed: 42           # 固定种子，可复现（对应 $PREPARE_WORKLOAD_SEED）
+  # V4.1 固定数据子集（表附-8「case_id 升序 + sha256(id||content) 稳定排序取前 N」）。
+  # prepare.sh 的 subsets 子命令逐项实施；url 留空=暂不接入（记录占位，跳过并提示）。
+  subsets:
+    - name: sharegpt            # A2 dialogue（ShareGPT 固定 64 例）
+      url: "https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/ShareGPT_V3_unfiltered_cleaned_split.json"
+      format: json
+      id_key: id
+      n: 64
+    - name: gsm8k               # A2 reasoning（GSM8K main/test 固定 64 例）
+      url: "https://raw.githubusercontent.com/openai/grade-school-math/master/grade_school_math/data/test.jsonl"
+      format: jsonl
+      content_key: question
+      n: 64
+    - name: bfcl                # A2 tool（BFCL V4 固定 64 例，真实工具定义）
+      url: ""                  # 待填真实数据源后启用
+      n: 64
+    - name: jsonschema          # A2 structured（JSONSchemaBench 固定 64 例）
+      url: ""                  # 待填真实数据源后启用
+      n: 64
+    - name: long                # A2/A3 长上下文（业务长文本）
+      url: ""                  # 待填真实数据源后启用
+      n: 32

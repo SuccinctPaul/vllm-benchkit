@@ -7,16 +7,25 @@
 ## 文档入口
 
 - [CONTEXT.md](./CONTEXT.md) —— 术语表（目标/边界/三层归属/踢出项）
-- [docs/guide/](./docs/guide/README.md) —— 使用与设计指南（how to run / 命令行功能 / 配置参考 / 输出说明 / 设计原理）
+- **[docs/README.md](./docs/README.md) —— 文档唯一总入口**（文档地图 + 新手路线 + 名词 + 维护，先读它）
+- [docs/understand.md](./docs/understand.md) —— 这是什么（两档玩法：黑盒冒烟 / 正式验收；三层归属；硬约束）
+- [docs/run.md](./docs/run.md) —— 怎么跑（装环境 → 冒烟 → 验收，一页串完）
+- [docs/maintenance.md](./docs/maintenance.md) —— 为什么能维护＆运行（单一事实来源 / 同步规则 / 留痕 / 改动自查）
+- [docs/guide/](./docs/guide/README.md) —— 黑盒工具细节（bench/profile 命令 / 参数 / 输出）
+- [docs/acceptance/](./docs/acceptance/README.md) —— vllm-xcheck 正式验收子系统（A1–A4：功能 / 设计 / how-to-run / 配置参数 / 覆盖度）
+- [docs/acceptance/acceptance-tasks.md](./docs/acceptance/acceptance-tasks.md) —— 验收执行层任务清单（按组 C/I/Q/M/A/K/D/S/Z）
 - [docs/official-capabilities.md](./docs/official-capabilities.md) —— 官方能力清单与可增补项（复用官方，少造轮子）
 - [docs/roadmap.md](./docs/roadmap.md) —— 未来路线图（先做性能对比，达标后拆解）
-- [config/config.yaml](./config/config.yaml) —— 参数默认配置（环境变量优先，见 ADR-0005）
+- [config/config.yaml](./config/config.yaml) —— 运行参数默认配置（环境变量优先，见 ADR-0005）
+- [config/vllm-xcheck/](./config/vllm-xcheck/) —— V4.1 正式验收配置层（common + precision + cells + schema）
 - [docs/adr](./docs/adr/0001-use-vllm-bench-as-benchmark-driver.md) —— 架构决策记录
   - `0001` 用 `vllm bench` 当基准驱动
   - `0002` 用 uv 建独立环境，不继承预装环境
   - `0003` canonical 源 = `config/topology.yaml` 钉的双仓库
   - `0004` profiling 用 Ascend PyTorch Profiler（内置）
   - `0005` 参数外置到 config.yaml，环境变量优先
+  - `0006` 部署拓扑外置到 config/topology.yaml（从 pyproject 移除仓库路径）
+  - `0007` 基准按双 commit（vllm / vllm-ascend）归档到 runs/，附运行清单
 
 ## 核心结论（简述）
 

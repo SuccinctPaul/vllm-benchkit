@@ -1,0 +1,210 @@
+# vllm-xcheck 验收配置字段契约（schema.yaml）
+# 人读契约 + src/acceptance.py 的必填集来源。分三层合并：
+#   common.yaml(基线) <- cells/<cell>.yaml(覆盖) <- precision/<p>.yaml(精度 overlay)
+# 三层都遵循同一组 section（meta / model / server / env / sampling / workload）。
+# 校验规则：
+#   - 每个 profile 的字段必须出现在下表 required 集（或任一 overlay 提供）；
+#   - 只允许出现在 allowed 集；出现未知字段 = fail-closed。
+#
+# 命名约定（隐私边界）：本 schema 只列泛化字段名，不含机器/仓库/版本具体值。
+metadata:
+  precision:            # precision/<p>.yaml 的精度标识
+    allowed: [FP16, W8A8]
+    description: 精度 overlay 名，cells 通过 meta.precisions 声明其合法精度
+
+# 顶层允许的 section（allowed 项之外的顶层键一律拒绝）。
+top_level:
+  allowed: [meta, model, server, env, sampling, workload]
+
+# 各 section 必填字段（deep key 用 . 分隔；required 之外还允许 allowed 中的可选字段）。
+required:
+  meta:
+    - cell               # 任务标识，如 a2-dialogue
+    - profile            # 正式 profile_id，如 A2-DIALOGUE-FP16-PC
+    - precisions         # 本 cell 合法精度列表，如 [FP16, W8A8]
+    - endpoint           # HTTP 端点：/v1/completions 或 /v1/chat/completions
+    - api                # 协议族：completions | chat
+  model:
+    - family             # model_family，如 Qwen2.5-14B-Instruct
+    - served_name        # 固定 API 逻辑名（可含 {precision} 占位，展开后替换）
+    - load_format        # auto；effective 必须是 safetensors
+  server:
+    - gpu_memory_utilization
+    - max_num_seqs
+    - max_num_batched_tokens
+    - enable_prefix_caching
+    - enable_chunked_prefill
+    - compile_mode
+    - enforce_eager
+    - cudagraph_mode
+    - cudagraph_num_of_warmups
+  env:
+    - VLLM_TARGET_DEVICE
+    - VLLM_USE_V1
+    - VLLM_WORKER_MULTIPROC_METHOD
+    - PYTHONHASHSEED
+    - TOKENIZERS_PARALLELISM
+    - ASCEND_VISIBLE_DEVICES
+  sampling:
+    - temperature
+    - top_p
+    - ignore_eos
+    - streaming
+    - client_seed
+    - repeats
+  workload:
+    - mode               # closed-loop | poisson(capacity) | mixed
+    - primary_metric
+    - timeouts           # {warmup, measure, per_request, lifecycle|capacity}
+
+# 每 section 允许的完整字段集（required ∪ optional），用于拒绝拼写错误/表外字段。
+allowed:
+  meta:
+    - cell
+    - profile
+    - precisions
+    - endpoint
+    - api
+    - precision          # 来自 precision overlay（FP16 | W8A8）
+  model:
+    - family
+    - served_name
+    - revision            # 实例化方填具体 revision（.gitignore）
+    - load_format
+    - kv_cache_dtype      # requested（附-2：auto）
+    - kv_cache_effective  # effective（附-2：torch.float16）
+    - block_size
+    - dtype               # 来自 precision overlay
+    - quantization        # 来自 precision overlay（null | ascend）
+    - served_suffix       # 来自 precision overlay（fp16 | w8a8）
+  server:
+    - protocol
+    - host
+    - uvicorn_workers
+    - log_level
+    - access_log
+    - startup_health_timeout_s
+    - health_interval_s
+    - graceful_shutdown_timeout_s
+    - tensor_parallel_size
+    - pipeline_parallel_size
+    - data_parallel_size
+    - expert_parallel_size
+    - dcp_comm_backend
+    - disable_custom_all_reduce
+    - serving_mode
+    - pd_disaggregation
+    - replicas
+    - speculative
+    - speculative_model
+    - speculative_tokens
+    - scheduling_policy
+    - distributed_executor_backend
+    - cpu_binding_policy
+    - tokenizer_mode
+    - trust_remote_code
+    - engine_seed
+    - enable_lora
+    - enable_prompt_adapter
+    - kv_offload
+    - swap_space_gib
+    - cpu_offload_gib
+    - max_model_len
+    - gpu_memory_utilization
+    - max_num_seqs
+    - max_num_batched_tokens
+    - enable_prefix_caching
+    - enable_chunked_prefill
+    - compile_mode
+    - enforce_eager
+    - cudagraph_mode
+    - cudagraph_num_of_warmups
+    - capture_sizes
+    - auto_tool_choice
+    - structured_outputs_backend
+    - tool_call_parser
+    - tool_parser_plugin
+    - reasoning_parser
+    - chat_template
+    - content_format
+    - trust_request_chat_template
+    - template_kwargs
+    - disable_any_whitespace
+    - disable_additional_properties
+  env:
+    - VLLM_TARGET_DEVICE
+    - VLLM_USE_V1
+    - VLLM_WORKER_MULTIPROC_METHOD
+    - PYTHONHASHSEED
+    - TOKENIZERS_PARALLELISM
+    - HF_HUB_OFFLINE
+    - TRANSFORMERS_OFFLINE
+    - HF_DATASETS_OFFLINE
+    - HCCL_CONNECT_TIMEOUT
+    - ASCEND_VISIBLE_DEVICES
+    - OMP_NUM_THREADS
+    - PYTORCH_NPU_ALLOC_CONF
+    - TASK_QUEUE_ENABLE
+  sampling:
+    - temperature
+    - top_p
+    - top_k
+    - min_p
+    - presence_penalty
+    - frequency_penalty
+    - repetition_penalty
+    - n
+    - best_of
+    - beam_search
+    - stop
+    - stop_token_ids
+    - ignore_eos
+    - max_tokens
+    - min_tokens
+    - echo
+    - logprobs
+    - parallel_tool_calls
+    - detokenize
+    - skip_special_tokens
+    - spaces_between_special_tokens
+    - add_special_tokens
+    - truncate_prompt_tokens
+    - add_generation_prompt
+    - continue_final_message
+    - stream_options
+    - client_seed
+    - streaming
+    - repeats
+  workload:
+    - mode
+    - dataset            # ShareGPT | BFCL V4 | GSM8K | JSONSchemaBench | long | synthetic | mixed
+    - dataset_fixed      # 固定样本结构，如 {sessions, rounds} / {single,multi_parallel,multi_turn} / 长文本档
+    - shapes             # A1 固定形状列表
+    - rates              # 容量扫描 rate 升序序列
+    - max_concurrency
+    - caps               # 每 rate 的 request_cap
+    - request_shape      # A2 形状约束 {input_max, output_cap}
+    - timeouts
+    - slo                # A2 绝对 SLO 阈值（附-8）：{ttft: {mean,p95,p99}, tpot: {...}, long: {...}}
+    - primary_metric
+    - tenants            # A4 租户与份额
+    - concurrency        # A3 closed-loop 并发
+    - total_context_tokens
+    - input_tokens
+    - window_count
+    - window_s
+    - max_requests
+    - min_completed_requests
+    - b0_capacity_points # A4 B0-FP16 混合容量扫描点
+    - global_load_factor # A4 70% 正式负载系数
+    - per_tenant_concurrency
+    - global_concurrency
+    - isolation_token_rate # A4 租户隔离 B0-FP16 基线的 per-tenant token_rate（缺省回退 b0_max）
+# 精度 overlay 自身字段（precision/<p>.yaml）
+precision_fields:
+  allowed:
+    - name
+    - dtype            # float16
+    - quantization     # null | ascend
+    - served_suffix    # fp16 | w8a8
+    - kv_cache_effective

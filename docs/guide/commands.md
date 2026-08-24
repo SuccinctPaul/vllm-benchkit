@@ -9,7 +9,7 @@
 | `scripts/bench.sh` | 基准 benchmark：wrap 官方 `vllm bench` | `serve` \| `throughput` \| `latency` |
 | `scripts/profile.sh` | profiling：启动带 profiler 的 server 并采集/解析 | `serve` \| `start` \| `stop` \| `analyse` |
 
-两者都：读 `config/config.yaml` 默认值（环境变量优先）、source `npu_env.sh` 加载 CANN、tee 输出到 `runs/`。具体装配逻辑见 [design.md](./design.md#1-数据流与优先级)。
+两者都：读 `config/config.yaml` 默认值（环境变量优先）、source `npu_env.sh` 加载 CANN、tee 输出到 `runs/`。具体装配逻辑见 [design.md §1](./design.md#L5)。
 
 ## 2. bench.sh 子命令
 
@@ -27,7 +27,7 @@
 
 **一句话**：`serve` 测「生产环境跑得怎么样」（含网络/排队/调度全链路，偏延迟），`throughput` 测「引擎本身能跑多快」（纯计算，偏吞吐、理论上限），`latency` 测「单请求纯延迟」（kernel 回归）。
 
-三者共用 `model`、`devices`、`bench.dataset`、`bench.dataset_path`、`bench.load_format`；结果除 stdout/tee 外，还会 `--save-result` 落盘 JSON 到 `runs/`（见 [output.md](./output.md#1-产物清单)）。
+三者共用 `model`、`devices`、`bench.dataset`、`bench.dataset_path`、`bench.load_format`；结果除 stdout/tee 外，还会 `--save-result` 落盘 JSON 到 `runs/`（见 [output.md §1 产物清单](./output.md#L5)）。
 
 ### 底层实际命令
 
@@ -44,7 +44,7 @@
 
 | 子命令 | 做什么 | 说明 |
 |--------|--------|------|
-| `serve` | 启动带 profiler 的 vLLM server | 阻塞式；通过 `--profiler-config` 注入采集配置（[design.md](./design.md#1-数据流与优先级)）；端口由 `profile.port` 控制 |
+| `serve` | 启动带 profiler 的 vLLM server | 阻塞式；通过 `--profiler-config` 注入采集配置（[design.md §1](./design.md#L5)）；端口由 `profile.port` 控制 |
 | `start` | 向 server 发 `POST /start_profile` | 触发开始采集；需在 serve 运行中的另一终端执行 |
 | `stop` | 向 server 发 `POST /stop_profile` | 停止采集并落盘 trace 到 `profile_out/` |
 | `analyse` | 调用 `torch_npu.profiler.profiler.analyse` 解析 trace | 打印算子统计数据；输入 `profile_out/*_ascend_pt` |
@@ -54,13 +54,10 @@
 ## 4. 输出去向
 
 - stdout：指标打印到终端
-- 归档目录 `runs/<时间戳>-<vllm_sha7>-<va_sha7>/`（bench.sh）：`<mode>.log`（tee 全量）、`*.json`（结构化结果）、`manifest.yaml`（两仓完整 commit 哈希 + 参数快照，见 [output.md](./output.md#1-产物清单)）；目录名同时含 vllm 与 vllm-ascend 短哈希（ADR-0007）
+- 归档目录 `runs/<时间戳>-<vllm_sha7>-<va_sha7>/`（bench.sh）：`<mode>.log`（tee 全量）、`*.json`（结构化结果）、`manifest.yaml`（两仓完整 commit 哈希 + 参数快照，见 [output.md §1](./output.md#L5)）；目录名同时含 vllm 与 vllm-ascend 短哈希（ADR-0007）
 - 本地无拓扑/无仓库时回退平铺 `runs/<时间戳>-<mode>.log`
 - `profile_out/`：profile trace 原始产物
 
 ## 5. 待核实项
 
-- `serve` 的 `--backend vllm` 实际是进程内直接驱动 engine 还是起独立 server；
-- `latency` 与 `--save-result`/`--result-dir` 的真实 flag 语法。
-
-装好环境后以 `vllm bench serve --help` / `vllm bench latency --help` / `vllm serve --help` 实测回填（见 [how-to-run.md](./how-to-run.md#5-待核实项)）。
+`--backend vllm` 是否进程内驱动、`latency` 与 `--save-result`/`--result-dir` 的真实 flag 语法等**核实收敛到单一权威**：[official-capabilities.md「已知冲突/待核实」](../official-capabilities.md)（见 [how-to-run.md §5](./how-to-run.md#L126)）。装好环境后实测回填仅在官方权威处进行，本文件不另行维护清单（避免多处漂移）。

@@ -44,7 +44,13 @@ uv sync
 
 ## 相关文档
 
+- [../README.md](../README.md) —— 全仓文档唯一总入口（地图 + 新手路线 + 名词）
+- [../understand.md](../understand.md) —— 这是什么：两档玩法（黑盒冒烟：本 guide；正式验收：../acceptance）、三层归属、硬约束
+- [../run.md](../run.md) —— 怎么跑：先冒烟后验收，一条路串完
 - [CONTEXT.md](../../CONTEXT.md) —— 术语表（目标/边界/三层归属/踢出项）
+- [../acceptance/README.md](../acceptance/README.md) —— 正式验收子系统（A1–A4：功能/设计/how-to-run/覆盖度/配置参数）
+- [../maintenance.md](../maintenance.md) —— 为什么能维护＆运行、改动自查
 - [official-capabilities.md](../official-capabilities.md) —— 官方能力清单与可增补项
 - [config/config.yaml](../../config/config.yaml) —— 参数默认配置
-- [docs/adr](../../docs/adr/) —— 架构决策记录（0001~0006）
+- [config/vllm-xcheck/](../../config/vllm-xcheck/) —— V4.1 正式验收配置层（common + precision + cells + schema）
+- [docs/adr](../../docs/adr/) —— 架构决策记录（0001~0010）

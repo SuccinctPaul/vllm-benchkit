@@ -7,3 +7,5 @@ v0.18.0 黑盒阶段的 profiling 统一走华为内置的 Ascend PyTorch Profil
 注意：vLLM 主线的 `VLLM_TORCH_PROFILER_DIR` 已废弃，v0.16 起改用 `--profiler-config` 参数。
 
 待核实（P0）：`--profiler-config` 的合法传法有点号记法（`--profiler-config.profiler=torch`）与 JSON blob（`{"profiler":"torch",...}`，profile.sh 当前所用）两种表述，v0.18.0 实际接受哪一种须在装好环境后以 `vllm serve --help` / canonical 源码实测为准，并回填本文与 profile.sh，不臆造。
+
+> 核实结果与后续语法对账，收敛到单一权威 [official-capabilities.md「已知冲突/待核实」](../official-capabilities.md)（本 ADR 仅存原始判断，实测回填以官方权威处为准）。
