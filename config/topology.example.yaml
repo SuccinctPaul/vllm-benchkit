@@ -14,15 +14,15 @@ dir: /path/to/workdir
 # manage: false = deploy.sh 不 clone/checkout 它（它是监督者，deploy.sh 从它这里运行）
 repos:
   vllm-benchkit:
-    url: git@github.com:SuccinctPaul/vllm-benchkit.git
+    url: git@github.com:<your-github-org>/vllm-benchkit.git
     branch: dev
     commit: ""
     manage: false
   vllm:
-    url: git@github.com:SuccinctPaul/vllm.git
+    url: git@github.com:vllm-project/vllm.git
     branch: releases/v0.18.0
     commit: ""
   vllm-ascend:
-    url: git@github.com:SuccinctPaul/vllm-ascend.git
+    url: git@github.com:vllm-project/vllm-ascend.git
     branch: releases/v0.18.0
     commit: ""
