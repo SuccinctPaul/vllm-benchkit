@@ -131,7 +131,14 @@ for s in subs:
     norm = []
     for i, r in enumerate(recs):
         cid = r.get(id_key, i) if id_key else i
-        if content_key:
+        # ShareGPT：提取最后一条 human 轮次作为干净对话问句，避免把整条记录
+        # JSON dump（含完整多轮 conversations）当 prompt——超长触发 400
+        # （context overflow）或长续写命中 max_tokens→silent_truncation（真机实测）。
+        if name == "sharegpt" and isinstance(r, dict) and "conversations" in r:
+            humans = [t.get("value", "") for t in r.get("conversations", [])
+                      if isinstance(t, dict) and t.get("from") == "human" and t.get("value")]
+            content = humans[-1] if humans else ""
+        elif content_key:
             content = r.get(content_key, "")
         elif "content" in r:
             content = r["content"]
