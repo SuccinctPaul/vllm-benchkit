@@ -80,7 +80,7 @@ bash scripts/acceptance.sh stop a4-mt FP16
 python src/client/run.py --cell a4-mt --precision FP16 --selftest --allow-missing
 python src/client/run.py --cell a3-32k --precision FP16 --selftest --allow-missing
 python src/client/run.py --cell a1 --precision FP16 --selftest --allow-missing
-python src/client/generate.py   # C1+C2 合同生成/自测
+python src/client/generate.py --cell a2-dialogue --precision FP16 --selftest --allow-missing   # C1+C2 合同生成/自测
 ```
 
 ## 6. 环境变量覆盖开关（smoke / 资源）
