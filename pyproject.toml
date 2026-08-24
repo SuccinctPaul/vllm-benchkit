@@ -1,4 +1,4 @@
-# vllm-notes — uv 管理的依赖（纯第三方运行时清单）
+# vllm-benchkit — uv 管理的依赖（纯第三方运行时清单）
 # 基准版本: vLLM core + vllm-ascend @ releases/v0.18.0; CANN 9.0.0; Atlas 910B2
 # 版本栈按 vllm-ascend 官方 pin（torch 2.9.0 / torch-npu 2.9.0.post2），见 ADR-0002。
 #
@@ -6,7 +6,7 @@
 # 其远程仓库路径、branch/commit 的唯一事实来源是 config/topology.yaml（ADR-0006），
 # 由 scripts/deploy.sh 按清单推导路径并做 editable 安装，本文件不再承载仓库路径。
 [project]
-name = "vllm-notes"
+name = "vllm-benchkit"
 version = "0.1.0"
 description = "vLLM Ascend benchmark/profile harness (v0.18.0)"
 requires-python = ">=3.11,<3.12"

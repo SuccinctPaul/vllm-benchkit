@@ -1,4 +1,4 @@
-# 构建 vllm-notes 文档并发布到 GitHub Pages。
+# 构建 vllm-benchkit 文档并发布到 GitHub Pages。
 # 前置：仓库 Settings → Pages → Source 选 "GitHub Actions"（一次性）。
 # 触发：push 到目标分支（默认 feat/vllm-xcheck；如需改分支，改下方 on/push/branches）
 # 说明：link_rewrite 插件是本地微包（mkdocs/），在构建步骤里 pip install -e 装上；

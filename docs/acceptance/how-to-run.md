@@ -25,7 +25,7 @@
 ## 1. 部署（一次性）
 
 ```bash
-# 在 vllm-notes 目录下：把双仓库 clone 到清单钉的 commit 并 editable 安装
+# 在 vllm-benchkit 目录下：把双仓库 clone 到清单钉的 commit 并 editable 安装
 ./scripts/deploy.sh install
 
 # 只读核对已部署的仓库状态
@@ -86,13 +86,13 @@ python src/client/generate.py   # C1+C2 合同生成/自测
 
 | 环境变量 | 作用 | 默认 |
 |---------|------|------|
-| `VLLM_NOTES_SHORT=1` | 把 workload 时长/规模缩到分钟级（smoke） | 关 |
-| `VLLM_NOTES_GPU_MEM_UTIL` | 降显存利用率（共享机防 OOM） | 配置值 |
-| `VLLM_NOTES_SKIP_GRAPH_ARGS=1` | 跳过 `--compile-mode`/`--cudagraph-mode`（ascend build 不支持） | 关 |
+| `VLLM_BENCHKIT_SHORT=1` | 把 workload 时长/规模缩到分钟级（smoke） | 关 |
+| `VLLM_BENCHKIT_GPU_MEM_UTIL` | 降显存利用率（共享机防 OOM） | 配置值 |
+| `VLLM_BENCHKIT_SKIP_GRAPH_ARGS=1` | 跳过 `--compile-mode`/`--cudagraph-mode`（ascend build 不支持） | 关 |
 | `ALLOW_MISSING_DATASETS=1` | 豁免缺数据集工件（仅 smoke，其余门禁仍强制） | 0 |
-| `VLLM_NOTES_VENV` / `VLLM_NOTES_CONFIG` / `VLLM_NOTES_RUNS` | 覆盖 venv / 配置 / 归档目录 | `$ROOT/.venv` 等 |
+| `VLLM_BENCHKIT_VENV` / `VLLM_BENCHKIT_CONFIG` / `VLLM_BENCHKIT_RUNS` | 覆盖 venv / 配置 / 归档目录 | `$ROOT/.venv` 等 |
 
-> A1 离线基准（`completions` API）走 `bench.sh throughput`，须显式设 `BENCH_GPU_UTIL`（不继承 `VLLM_NOTES_GPU_MEM_UTIL`）。
+> A1 离线基准（`completions` API）走 `bench.sh throughput`，须显式设 `BENCH_GPU_UTIL`（不继承 `VLLM_BENCHKIT_GPU_MEM_UTIL`）。
 
 ## 7. 产物查看
 
@@ -106,6 +106,6 @@ python src/client/generate.py   # C1+C2 合同生成/自测
 ## 8. 常见坑（from 真机经验）
 
 - **模型加载**：用 `--model-ref` 带组织前缀（如 `Qwen/Qwen2.5-14B-Instruct`）才能命中离线缓存。
-- **serve 不接受图参数**：ascend build 的 serve 无 `--compile-mode`/`--cudagraph-mode` → 设 `VLLM_NOTES_SKIP_GRAPH_ARGS=1`。
+- **serve 不接受图参数**：ascend build 的 serve 无 `--compile-mode`/`--cudagraph-mode` → 设 `VLLM_BENCHKIT_SKIP_GRAPH_ARGS=1`。
 - **isolation 基线并发口径**：隔离基线要先 full_load——单租户独占至 `max_num_seqs` 并发，否则基线 p99 被低估导致假 FAIL（verify18 教训）。
 - **进程残留占 NPU**：`stop_server` 15s SIGTERM 未退出则 SIGKILL，防止共用机残留。

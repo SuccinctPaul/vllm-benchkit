@@ -1,11 +1,11 @@
-# vllm-notes 文档中心 —— MkDocs 站点配置
+# vllm-benchkit 文档中心 —— MkDocs 站点配置
 # 说明：
 #   - 站点只发布 docs/ 子树；本文件、mkdocs/（本地插件）、.github/ 都在 docs 外，只进 git 不进站点。
 #   - 本地构建：.docs-venv/bin/mkdocs build   （独立工具环境，不污染项目 uv 锁；详见 mkdocs/README.md）
 #   - 在线发布：.github/workflows/pages.yml（GitHub Actions → Pages）
 #   - 隐私：不在此处硬编码 repo_url；out-of-docs 链接由 mkdocs/link_rewrite.py 在构建期改写。
 
-site_name: vllm-notes 文档中心
+site_name: vllm-benchkit 文档中心
 site_description: vLLM + vLLM-Ascend 基准与验收（黑盒冒烟 → 正式验收）新手友好文档
 docs_dir: docs
 site_dir: site

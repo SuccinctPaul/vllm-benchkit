@@ -1124,7 +1124,7 @@ async def _selftest(args):
           f"z3={ev['z3']['gate']} metrics={ev['metrics']}")
 
     # 20) M 自动聚合：提供 serve-log/pid 时 _finalize 自动采集（M1 从 serve.log 解析）
-    _m_log = os.path.join(tempfile.gettempdir(), "vllm-notes-mtest-serve.log")
+    _m_log = os.path.join(tempfile.gettempdir(), "vllm-benchkit-mtest-serve.log")
     with open(_m_log, "w", encoding="utf-8") as f:
         f.write("INFO Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): "
                 "100%|#| 5/5 [00:00<00:00]\n"

@@ -103,8 +103,8 @@ def expand_placeholders(cfg):
 
 def model_server_argv(cfg, model_ref):
     server, model = cfg.get("server", {}), cfg.get("model", {})
-    # smoke 覆盖：VLLM_NOTES_GPU_MEM_UTIL 临时降显存利用率（缺省用配置值，不污染 common.yaml）
-    gpu_util = float(os.environ.get("VLLM_NOTES_GPU_MEM_UTIL", server.get("gpu_memory_utilization")))
+    # smoke 覆盖：VLLM_BENCHKIT_GPU_MEM_UTIL 临时降显存利用率（缺省用配置值，不污染 common.yaml）
+    gpu_util = float(os.environ.get("VLLM_BENCHKIT_GPU_MEM_UTIL", server.get("gpu_memory_utilization")))
     # value 型 flag 只在配置给值时发射；未指定（None）则不发射该 flag（保守映射，
     # 交由 serve 默认。曾因 a2 未声明 max_model_len 而渲染出孤悬的 --max-model-len）。
     pairs = [
@@ -157,9 +157,9 @@ def model_server_argv(cfg, model_ref):
         elif val is False:
             flags.append((disable_flag, None))
     # 图执行：compile_mode 不为 none 时给出 compile 相关保守标志（目标机需 --help 对账）。
-    # smoke 豁免（VLLM_NOTES_SKIP_GRAPH_ARGS=1）：真机 ascend build 的 serve 不接受
+    # smoke 豁免（VLLM_BENCHKIT_SKIP_GRAPH_ARGS=1）：真机 ascend build 的 serve 不接受
     # --compile-mode/--cudagraph-mode（--help=all 无此 flag），smoke 时跳过仅验证连通。
-    skip_graph = os.environ.get("VLLM_NOTES_SKIP_GRAPH_ARGS") == "1"
+    skip_graph = os.environ.get("VLLM_BENCHKIT_SKIP_GRAPH_ARGS") == "1"
     if server.get("compile_mode") and server.get("compile_mode") not in ("none", None) and not skip_graph:
         flags.append(("--compile-mode", server.get("compile_mode")))
         flags.append(("--cudagraph-mode", server.get("cudagraph_mode")))
@@ -205,7 +205,7 @@ def expand(cell_name, pname, model_ref=""):
     merged = deep_merge(common, cell)
     merged = deep_merge(merged, prec)   # precision overlay 最后叠（只改 dtype/quant/served_suffix/precision 名）
     expand_placeholders(merged)
-    if os.environ.get("VLLM_NOTES_SHORT") == "1":
+    if os.environ.get("VLLM_BENCHKIT_SHORT") == "1":
         _apply_smoke(merged)            # smoke 覆盖：把 workload 时长/规模缩到分钟级
 
     errors, warnings = validate(SCHEMA, merged)
@@ -219,9 +219,9 @@ def expand(cell_name, pname, model_ref=""):
 
 
 def _apply_smoke(merged):
-    """VLLM_NOTES_SHORT=1 真机 smoke：把 workload 时长/规模缩到分钟级。
+    """VLLM_BENCHKIT_SHORT=1 真机 smoke：把 workload 时长/规模缩到分钟级。
 
-    与 VLLM_NOTES_GPU_MEM_UTIL 同一设计（smoke 临时覆盖、不污染 cell 配置）。
+    与 VLLM_BENCHKIT_GPU_MEM_UTIL 同一设计（smoke 临时覆盖、不污染 cell 配置）。
     仅影响 run.py 客户端 workload；server argv 不受影响。
     A1 的 timeouts.warmup_s/measure_s 语义为轮数（见 cells/a1.yaml 注释），故 A1 收 1/2 轮。
     """

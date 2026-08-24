@@ -77,10 +77,10 @@ def build_request_body(cfg, case, sampling, history):
     if sampling.get("logprobs"):
         body["logprobs"] = True
     # smoke 专用：Qwen3 思考模型（如 MODEL_REF 覆盖的 Qwen3-0.6B）默认长 CoT 会触发
-    # 可变输出静默截断与输出长度失真；VLLM_NOTES_NO_THINKING=1 时经 chat_template_kwargs
+    # 可变输出静默截断与输出长度失真；VLLM_BENCHKIT_NO_THINKING=1 时经 chat_template_kwargs
     # 关掉 enable_thinking，让回退/短答在 output_cap 内自然 EOS。env 驱动、不进 config，
     # 因此不影响 config_hash / B0-B1 合同；正式测量（Qwen2.5 无思考）不设置即不生效。
-    if os.environ.get("VLLM_NOTES_NO_THINKING") == "1" and api == "chat":
+    if os.environ.get("VLLM_BENCHKIT_NO_THINKING") == "1" and api == "chat":
         body["chat_template_kwargs"] = {"enable_thinking": False}
 
     if api == "chat":

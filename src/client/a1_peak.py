@@ -2,7 +2,7 @@
 """A1-1 峰值 FLOPs 分母采集（V4.1 附-8/组 A1-1）。
 
 用途：真机上独占 910B2 测量 FP16 峰值算力，供 mfu.mfu_summary 的峰值分母
-（经 `VLLM_NOTES_PEAK_FLOPS` 环境变量注入，见 mfu.peak_flops_per_s）。
+（经 `VLLM_BENCHKIT_PEAK_FLOPS` 环境变量注入，见 mfu.peak_flops_per_s）。
 
 来源分级（honest，不冒充 ascend-dmi）：
   - 若检测到 ascend-dmi 可执行文件，则打印指引由人工执行并回填（保留原始输出，
@@ -90,7 +90,7 @@ def main():
 
     if shutil_which("ascend-dmi"):
         print("[a1_peak] 检测到 ascend-dmi：请人工执行并回填原始输出，"
-              "再以 VLLM_NOTES_PEAK_FLOPS=<值> 覆盖峰值分母；"
+              "再以 VLLM_BENCHKIT_PEAK_FLOPS=<值> 覆盖峰值分母；"
               "本脚本不代为执行 ascend-dmi。", file=sys.stderr)
 
     samples = measure_matmul_peak(args.n, args.iters, args.warmup, args.devices)
@@ -109,7 +109,7 @@ def main():
         json.dump(doc, f, ensure_ascii=False, indent=2)
     print(json.dumps(doc, ensure_ascii=False, indent=2))
     print(f"[a1_peak] 写 {args.out}；用以下环境变量注入峰值分母：")
-    print(f"  export VLLM_NOTES_PEAK_FLOPS={median:.0f}")
+    print(f"  export VLLM_BENCHKIT_PEAK_FLOPS={median:.0f}")
     return 0
 
 

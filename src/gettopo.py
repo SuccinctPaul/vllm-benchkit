@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""vllm-notes topology loader: config/topology.yaml -> shell export lines (ADR-0006).
+"""vllm-benchkit topology loader: config/topology.yaml -> shell export lines (ADR-0006).
 
 用法: gettopo.py <config/topology.yaml>   # 输出 `export TOPO_*` 行，由 deploy.sh eval 载入。
-仓库名可能含连字符（如 vllm-notes）当不成 shell 变量名，故按索引展开为
+仓库名可能含连字符（如 vllm-benchkit）当不成 shell 变量名，故按索引展开为
 `TOPO_REPO_<i>_<FIELD>`（FIELD ∈ NAME/URL/BRANCH/COMMIT/MANAGE）。布尔 manage 输出为
 JSON 小写 true/false。环境变量优先于 YAML（ADR-0005）由 deploy.sh 侧实现。
 """

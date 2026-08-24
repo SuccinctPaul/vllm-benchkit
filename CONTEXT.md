@@ -1,4 +1,4 @@
-# vllm-ascend benchmark/profile（vllm-notes）
+# vllm-ascend benchmark/profile（vllm-benchkit）
 
 本仓库用于沉淀「成为 vLLM Ascend 插件专家」的知识：从 benchmark 与 profiling 入手，先黑盒跑通、再逐步拆解，产出可复现、低耦合、模块化的薄脚本与文档。基准版本钉在 v0.18.0。
 
@@ -93,7 +93,7 @@ _Avoid_: 大模型、量化版
 _Avoid_: 把参数默认值再写回脚本、引入多 profile/CLI --set；把部署拓扑塞进本文件
 
 **config/topology.yaml（部署拓扑清单）**:
-描述"在哪里跑、跑哪些代码"：`server`（SSH 目标机）、`dir`（远程工作目录）、以及 vllm-notes/vllm/vllm-ascend 三个仓库各自的 url/branch/commit（ADR-0006）。与运行参数 config.yaml 分层不重合。
+描述"在哪里跑、跑哪些代码"：`server`（SSH 目标机）、`dir`（远程工作目录）、以及 vllm-benchkit/vllm/vllm-ascend 三个仓库各自的 url/branch/commit（ADR-0006）。与运行参数 config.yaml 分层不重合。
 _Avoid_: 把 server/repo 路径/commit 写回 pyproject.toml、guide、脚本内
 
 **隐私边界（基础设施信息仅存 topology.yaml）**:
@@ -119,5 +119,5 @@ _Avoid_: 混入本期 smoke
 _Avoid_: conda、复用预装环境
 
 **canonical 仓库源**:
-脚本/环境仅从 vllm-notes / vllm / vllm-ascend 三个仓库取用；其远程路径与 branch/commit 的唯一事实来源是 `config/topology.yaml`（ADR-0006），默认部署在拓扑清单 `server`/`dir` 下、@ `releases/v0.18.0`。
+脚本/环境仅从 vllm-benchkit / vllm / vllm-ascend 三个仓库取用；其远程路径与 branch/commit 的唯一事实来源是 `config/topology.yaml`（ADR-0006），默认部署在拓扑清单 `server`/`dir` 下、@ `releases/v0.18.0`。
 _Avoid_: 机器上其它历史副本；在 pyproject/guide 里另写仓库路径

@@ -1,4 +1,4 @@
-# vllm-notes
+# vllm-benchkit
 
 「成为 vLLM Ascend 插件专家」的笔记与工具仓库。切入点：**benchmark 与 profiling**。策略：先黑盒跑通，再逐步拆解；只 wrap 官方命令、低耦合、模块化；用 uv 管理独立环境。
 

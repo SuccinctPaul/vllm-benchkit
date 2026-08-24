@@ -221,7 +221,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# vllm-notes runtime artifacts
+# vllm-benchkit runtime artifacts
 profile_out/
 runs/
 

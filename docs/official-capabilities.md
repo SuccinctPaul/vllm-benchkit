@@ -1,6 +1,6 @@
 # 官方能力清单与可增补项（Official Capabilities）
 
-本文盘点官方已提供的基准/性能能力（vLLM `vllm bench` CLI + vllm-ascend 官方 `benchmarks/`），对照 vllm-notes 现状，列出**可增补的功能**。原则：**功能层全部复用官方能力，脚本只做薄 wrap + 参数化，不重写官方逻辑（少造轮子）**。
+本文盘点官方已提供的基准/性能能力（vLLM `vllm bench` CLI + vllm-ascend 官方 `benchmarks/`），对照 vllm-benchkit 现状，列出**可增补的功能**。原则：**功能层全部复用官方能力，脚本只做薄 wrap + 参数化，不重写官方逻辑（少造轮子）**。
 
 ## 官方来源
 

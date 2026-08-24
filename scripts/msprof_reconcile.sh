@@ -14,7 +14,7 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
-PY="${VLLM_NOTES_VENV:-$ROOT/.venv}/bin/python"
+PY="${VLLM_BENCHKIT_VENV:-$ROOT/.venv}/bin/python"
 source "$HERE/npu_env.sh"
 
 cmd="${1:?用法: msprof_reconcile.sh {collect|reconcile} ...}"; shift

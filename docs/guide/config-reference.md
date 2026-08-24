@@ -43,9 +43,9 @@ BENCH_DATASET=sharegpt BENCH_DATASET_PATH=... ./scripts/bench.sh serve  # 换数
 
 | 环境变量 | 作用 | 默认值 |
 |---------|------|--------|
-| `VLLM_NOTES_VENV` | venv 路径 | `$ROOT/.venv` |
-| `VLLM_NOTES_CONFIG` | 配置文件路径 | `$ROOT/config/config.yaml` |
-| `VLLM_NOTES_RUNS` | 日志/结果目录 | `$ROOT/runs` |
+| `VLLM_BENCHKIT_VENV` | venv 路径 | `$ROOT/.venv` |
+| `VLLM_BENCHKIT_CONFIG` | 配置文件路径 | `$ROOT/config/config.yaml` |
+| `VLLM_BENCHKIT_RUNS` | 日志/结果目录 | `$ROOT/runs` |
 
 ## 3. 参数怎么生效（装配链路）
 

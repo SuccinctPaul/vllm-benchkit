@@ -31,7 +31,7 @@ _DEFAULT_ARCH_NAME = "Qwen2.5-14B-Instruct"
 
 # 峰值占位：910B2 FP16 理论峰值估计（TFLOPS→FLOPs/s）。真机 ascend-dmi 结果应覆盖此值。
 _PEAK_FLOPS_FALLBACK = 320e12
-_PEAK_ENV = "VLLM_NOTES_PEAK_FLOPS"
+_PEAK_ENV = "VLLM_BENCHKIT_PEAK_FLOPS"
 
 
 def arch_for(cfg):
@@ -47,7 +47,7 @@ def arch_for(cfg):
 def peak_flops_per_s(cfg=None, env_value=None):
     """硬件峰值 FLOPs/s 分母（组 A1-1 真机 ascend-dmi 应提供并覆盖）。
 
-    Priority: env_value 参数 > VLLM_NOTES_PEAK_FLOPS 环境变量 > 内置占位。
+    Priority: env_value 参数 > VLLM_BENCHKIT_PEAK_FLOPS 环境变量 > 内置占位。
     返回 (value, source)，source ∈ {"env", "builtin-fallback"}。
     """
     if env_value is not None and float(env_value) > 0:

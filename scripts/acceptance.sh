@@ -17,7 +17,7 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # scripts/
 ROOT="$(cd "$HERE/.." && pwd)"
-VENV="${VLLM_NOTES_VENV:-$ROOT/.venv}"
+VENV="${VLLM_BENCHKIT_VENV:-$ROOT/.venv}"
 VLLM="$VENV/bin/vllm"
 PY="$VENV/bin/python"
 [ -x "$PY" ] || { echo "[acceptance] 未找到 $VENV/bin/python，先 uv sync" >&2; exit 2; }
@@ -28,15 +28,15 @@ require_vllm() {   # list/profile 只需 python+yaml；真正起服务/跑客户
 }
 
 ACCEPT="$PY $ROOT/src/acceptance.py"
-ACCEPTED_BASE="${VLLM_NOTES_ACCEPTED:-$ROOT/runs/accepted}"
-PID_DIR="${VLLM_NOTES_PID_DIR:-$ROOT/runs/accepted/.pids}"
+ACCEPTED_BASE="${VLLM_BENCHKIT_ACCEPTED:-$ROOT/runs/accepted}"
+PID_DIR="${VLLM_BENCHKIT_PID_DIR:-$ROOT/runs/accepted/.pids}"
 
 # 默认值（可被环境变量覆盖；与 bench.sh 同 ADR-0005 习惯）
 : "${PORT:=8010}"
 : "${NUM_PROMPTS:=16}"
 : "${REQUEST_RATE:=1}"
 : "${MODEL_REF:=}"
-DATASETS_DIR="${VLLM_NOTES_DATASETS:-$ROOT/datasets}"
+DATASETS_DIR="${VLLM_BENCHKIT_DATASETS:-$ROOT/datasets}"
 # 0=fail-closed（缺工件即拒绝）；1=smoke 豁免缺工件（其余门禁仍强制）
 ALLOW_MISSING_DATASETS="${ALLOW_MISSING_DATASETS:-0}"
 
@@ -148,10 +148,10 @@ run_client() {
   # 真机代理坑（project_memory）：保留 http_proxy 供下载，但 client 打 localhost 必须绕过代理
   export no_proxy="${no_proxy:-},127.0.0.1,localhost"
   export NO_PROXY="${NO_PROXY:-},127.0.0.1,localhost"
-  # A1 离线走 bench.sh throughput（不经 serve 侧 argv），须把 VLLM_NOTES_GPU_MEM_UTIL
+  # A1 离线走 bench.sh throughput（不经 serve 侧 argv），须把 VLLM_BENCHKIT_GPU_MEM_UTIL
   # 传导为 BENCH_GPU_UTIL（export 才能传给子进程），否则 bench 默认 gpu_util=0.9
   # 在共享机显存紧张时 OOM；显式设置的 BENCH_GPU_UTIL 优先（仅离线下行有用）。
-  export BENCH_GPU_UTIL="${BENCH_GPU_UTIL:-${VLLM_NOTES_GPU_MEM_UTIL:-}}"
+  export BENCH_GPU_UTIL="${BENCH_GPU_UTIL:-${VLLM_BENCHKIT_GPU_MEM_UTIL:-}}"
   if [ "$API" = completions ]; then
     # A1 离线（MFU）：engine 内联，无需外部 server
     echo "[acceptance] A1 离线基准：$PROFILE_ID"

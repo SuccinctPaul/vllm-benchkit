@@ -1,4 +1,4 @@
-# vllm-notes 文档站点 —— 构建与本地运行手册
+# vllm-benchkit 文档站点 —— 构建与本地运行手册
 
 > 这篇是**站点构建运行**的唯一说明，写给想在本机预览或动手改站点的人。
 > 一句话：`docs/` 是内容，`mkdocs.yml` 是配置，`mkdocs/` 是本地插件，`site/` 是构建产物，`.github/workflows/pages.yml` 是 CI 发布。

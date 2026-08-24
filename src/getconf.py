@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""vllm-notes config loader: YAML -> shell export lines.
+"""vllm-benchkit config loader: YAML -> shell export lines.
 
 用法: getconf.py <config.yaml>
 把 YAML 拍平为 `export YAML_<KEY>=<value>` 行（顶层键 -> YAML_MODEL 等，

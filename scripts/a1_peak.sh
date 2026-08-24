@@ -7,7 +7,7 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
-PY="${VLLM_NOTES_VENV:-$ROOT/.venv}/bin/python"
+PY="${VLLM_BENCHKIT_VENV:-$ROOT/.venv}/bin/python"
 [ -x "$PY" ] || { echo "[a1_peak] 未找到 .venv/bin/python，先 uv sync" >&2; exit 2; }
 source "$HERE/npu_env.sh"
 N=8192; ITERS=7; WARMUP=3; DEVICES=0; OUT="$ROOT/runs/a1-peak.json"

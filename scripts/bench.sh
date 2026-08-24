@@ -7,7 +7,7 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # scripts/
 ROOT="$(cd "$HERE/.." && pwd)"
-VENV="${VLLM_NOTES_VENV:-$ROOT/.venv}"
+VENV="${VLLM_BENCHKIT_VENV:-$ROOT/.venv}"
 VLLM="$VENV/bin/vllm"
 [ -x "$VLLM" ] || { echo "[bench] 未找到 $VENV/bin/vllm，先 uv sync" >&2; exit 2; }
 
@@ -16,7 +16,7 @@ source "$HERE/npu_env.sh"
 MODE="${1:-}"
 
 # 载入 config.yaml 默认值（YAML_* 命名空间）；环境变量优先于 YAML，见 ADR-0005
-YAML_ENV="$("$VENV/bin/python" "$ROOT/src/getconf.py" "${VLLM_NOTES_CONFIG:-$ROOT/config/config.yaml}")"
+YAML_ENV="$("$VENV/bin/python" "$ROOT/src/getconf.py" "${VLLM_BENCHKIT_CONFIG:-$ROOT/config/config.yaml}")"
 eval "$YAML_ENV"
 
 : "${MODEL:=${YAML_MODEL:-}}"
@@ -40,10 +40,10 @@ eval "$YAML_ENV"
 
 # --- 双 commit 归档（ADR-0007）：目录名带 vllm / vllm-ascend 短哈希，同目录写 manifest.yaml ---
 # 单一 .venv 串行：并发跑会互踩归档目录；本地无拓扑/无仓库时回退平铺 runs/。
-RUNS_BASE="${VLLM_NOTES_RUNS:-$ROOT/runs}"
+RUNS_BASE="${VLLM_BENCHKIT_RUNS:-$ROOT/runs}"
 DIR=""
-if eval "$("$VENV/bin/python" "$ROOT/src/gettopo.py" "${VLLM_NOTES_TOPOLOGY:-$ROOT/config/topology.yaml}")" 2>/dev/null; then
-  DIR="${VLLM_NOTES_DIR:-${TOPO_DIR:-}}"
+if eval "$("$VENV/bin/python" "$ROOT/src/gettopo.py" "${VLLM_BENCHKIT_TOPOLOGY:-$ROOT/config/topology.yaml}")" 2>/dev/null; then
+  DIR="${VLLM_BENCHKIT_DIR:-${TOPO_DIR:-}}"
 fi
 vllm_sha7="$(git -C "$DIR/vllm" rev-parse --short HEAD 2>/dev/null || true)"
 va_sha7="$(git -C "$DIR/vllm-ascend" rev-parse --short HEAD 2>/dev/null || true)"
@@ -64,7 +64,7 @@ if [ -n "$vllm_sha7" ] && [ -n "$va_sha7" ]; then
       "$(git -C "$DIR/vllm" rev-parse HEAD 2>/dev/null || true)" \
       "$(git -C "$DIR/vllm-ascend" rev-parse HEAD 2>/dev/null || true)"
     printf 'params_snapshot:\n'
-    "$VENV/bin/python" "$ROOT/src/getconf.py" "${VLLM_NOTES_CONFIG:-$ROOT/config/config.yaml}" | sed 's/^/  /'
+    "$VENV/bin/python" "$ROOT/src/getconf.py" "${VLLM_BENCHKIT_CONFIG:-$ROOT/config/config.yaml}" | sed 's/^/  /'
   } > "$RUNS_DIR/manifest.yaml"
 fi
 

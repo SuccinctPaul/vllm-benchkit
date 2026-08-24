@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 # 配置驱动布置（deploy）：在目标机（服务器）上，依据 config/topology.yaml（ADR-0006）
-# 把 vllm / vllm-ascend 布置并可编辑安装进 .venv，vllm-notes 是从这里运行的监督者（manage:false）。
+# 把 vllm / vllm-ascend 布置并可编辑安装进 .venv，vllm-benchkit 是从这里运行的监督者（manage:false）。
 # 与 config/config.yaml（运行参数）严格分层；本脚本是 topology.yaml 的唯一消费方。
 # 用法: scripts/deploy.sh [install|check]   ; check 只解析+只读核对，不改仓库也不安装
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # scripts/
 ROOT="$(cd "$HERE/.." && pwd)"
-VENV="${VLLM_NOTES_VENV:-$ROOT/.venv}"
+VENV="${VLLM_BENCHKIT_VENV:-$ROOT/.venv}"
 PY="$VENV/bin/python"
-CONFIG="${VLLM_NOTES_CONFIG:-$ROOT/config/topology.yaml}"
+CONFIG="${VLLM_BENCHKIT_CONFIG:-$ROOT/config/topology.yaml}"
 MIRROR="https://repo.huaweicloud.com/ascend/repos/pypi"   # triton-ascend 等昇腾专属包
 
 MODE="${1:-install}"
@@ -27,8 +27,8 @@ uv pip install --python "$PY" pyyaml >/dev/null 2>&1 || true
 eval "$("$PY" "$ROOT/src/gettopo.py" "$CONFIG")"
 
 # 环境变量优先于 topology.yaml（ADR-0005）
-SERVER="${VLLM_NOTES_SERVER:-$TOPO_SERVER}"
-DIR="${VLLM_NOTES_DIR:-$TOPO_DIR}"
+SERVER="${VLLM_BENCHKIT_SERVER:-$TOPO_SERVER}"
+DIR="${VLLM_BENCHKIT_DIR:-$TOPO_DIR}"
 echo "[deploy] server=$SERVER  dir=$DIR  repos=$TOPO_REPO_COUNT  mode=$MODE"
 
 # --- 1) check 只读核对：report 每个仓库当前 HEAD / 期望 branch-commit ---

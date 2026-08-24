@@ -49,7 +49,7 @@
 ## 2. 安装（一次性）
 
 ```bash
-cd <topology.yaml 的 dir>/vllm-notes   # dir 见 config/topology.yaml
+cd <topology.yaml 的 dir>/vllm-benchkit   # dir 见 config/topology.yaml
 uv sync   # 读 pyproject.toml：torch/torch-npu/vllm/vllm-ascend/pyyaml
 ```
 
@@ -108,7 +108,7 @@ git -C <dir>/vllm checkout --detach <commit>
 ```bash
 MODEL=facebook/opt-125m ./scripts/bench.sh throughput
 ASCEND_RT_VISIBLE_DEVICES=0,1 ./scripts/bench.sh serve
-VLLM_NOTES_RUNS=/tmp/my-runs ./scripts/profile.sh serve
+VLLM_BENCHKIT_RUNS=/tmp/my-runs ./scripts/profile.sh serve
 ```
 
 优先级与全部可覆盖键见 [config-reference.md §2](./config-reference.md#L28)。

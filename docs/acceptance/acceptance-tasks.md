@@ -176,7 +176,7 @@
 ### A1-1 ascend-dmi 峰值分母
 - [x] 做法：独占 910B2 上执行 ascend-dmi FP16 算力测试 3 次，取中位数作为峰值分母。
 - 验收：原始 ascend-dmi 输出全部保留；三次测量可复现。
-- 落地：`scripts/a1_peak.sh` + `src/client/a1_peak.py`（910B2 单机一般不带 ascend-dmi，缺省用 torch_npu fp16 大矩阵乘实测——ascend-dmi 同原理；先热身再测 3 次以上取中位数，`samples_flops_per_s` 原始采样全保留，落 `runs/a1-peak.json`，打印 `VLLM_NOTES_PEAK_FLOPS=<中位>` 注入 mfu 峰值分母；检测到 ascend-dmi 时指引人工执行并回填，不冒充）。
+- 落地：`scripts/a1_peak.sh` + `src/client/a1_peak.py`（910B2 单机一般不带 ascend-dmi，缺省用 torch_npu fp16 大矩阵乘实测——ascend-dmi 同原理；先热身再测 3 次以上取中位数，`samples_flops_per_s` 原始采样全保留，落 `runs/a1-peak.json`，打印 `VLLM_BENCHKIT_PEAK_FLOPS=<中位>` 注入 mfu 峰值分母；检测到 ascend-dmi 时指引人工执行并回填，不冒充）。
 - 状态：**真机项，脚本已落地**。峰值分母来源 `source=torch-npu-matmul-fp16`（ascend-dmi 不存在时），spec 参考 910B2 FP16 理论 320 TFLOPS 一并记录；真机执行随 A1-A4 验证完成。
 
 ### A1-2 effective_compute_spec v1 与 msprof 对账

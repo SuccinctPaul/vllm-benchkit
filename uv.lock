@@ -365,7 +365,7 @@ wheels = [
 ]
 
 [[package]]
-name = "vllm-notes"
+name = "vllm-benchkit"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

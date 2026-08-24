@@ -3,9 +3,9 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "vllm-notes-mkdocs-plugins"
+name = "vllm-benchkit-mkdocs-plugins"
 version = "0.1.0"
-description = "vllm-notes 文档站点本地 MkDocs 插件（link_rewrite：走出 docs/ 的链接改写成 GitHub blob）"
+description = "vllm-benchkit 文档站点本地 MkDocs 插件（link_rewrite：走出 docs/ 的链接改写成 GitHub blob）"
 requires-python = ">=3.11"
 dependencies = ["mkdocs"]
 

@@ -6,7 +6,7 @@ set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # scripts/
 ROOT="$(cd "$HERE/.." && pwd)"
-VENV="${VLLM_NOTES_VENV:-$ROOT/.venv}"
+VENV="${VLLM_BENCHKIT_VENV:-$ROOT/.venv}"
 PY="$VENV/bin/python"
 [ -x "$PY" ] || { echo "[profile] 未找到 $VENV/bin/python，先 uv sync" >&2; exit 2; }
 
@@ -15,7 +15,7 @@ source "$HERE/npu_env.sh"
 MODE="${1:-}"
 
 # 载入 config.yaml 默认值（YAML_* 命名空间）；环境变量优先于 YAML，见 ADR-0005
-YAML_ENV="$("$PY" "$ROOT/src/getconf.py" "${VLLM_NOTES_CONFIG:-$ROOT/config/config.yaml}")"
+YAML_ENV="$("$PY" "$ROOT/src/getconf.py" "${VLLM_BENCHKIT_CONFIG:-$ROOT/config/config.yaml}")"
 eval "$YAML_ENV"
 
 : "${MODEL:=${YAML_MODEL:-}}"
@@ -24,7 +24,7 @@ eval "$YAML_ENV"
 : "${PROF_DIR:=$ROOT/${YAML_PROFILE_PROF_DIR:-profile_out}}"
 : "${PROF_WITH_STACK:=${YAML_PROFILE_WITH_STACK:-false}}"
 
-RUNS_DIR="${VLLM_NOTES_RUNS:-$ROOT/runs}"
+RUNS_DIR="${VLLM_BENCHKIT_RUNS:-$ROOT/runs}"
 LOG="$RUNS_DIR/$(date +%Y%m%d-%H%M%S)-$MODE.log"
 mkdir -p "$RUNS_DIR"
 

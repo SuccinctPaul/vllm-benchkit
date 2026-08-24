@@ -1,4 +1,4 @@
-# vllm-notes 默认配置：YAML 提供默认值，同名环境变量优先（见 docs/adr/0005）。
+# vllm-benchkit 默认配置：YAML 提供默认值，同名环境变量优先（见 docs/adr/0005）。
 # 改这里即可适配不同环境/版本，无需改脚本。
 
 model: "Qwen/Qwen3-0.6B"      # 对应 $MODEL（smoke 模型，基准与 profile 统一）
