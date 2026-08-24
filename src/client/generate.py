@@ -72,7 +72,9 @@ def main() -> int:
             d3 = _build(args.cell, "W8A8", args.datasets_dir, args.repeat,
                         args.allow_missing, args.model_ref)
             # W8A8 的 model 层不同，仅对比「客户端合同」部分（cases+arrival+hash）
-            sub = lambda d: {"cases": d[1], "arrival": d[2]}
+            def sub(d):
+                return {"cases": d[1], "arrival": d[2]}
+
             prec_ok = common.canonical_json(sub(d1)) == common.canonical_json(sub(d3))
             if not prec_ok:
                 print("[client] SELFTEST FAIL: FP16 与 W8A8 客户端合同不一致（B0/B1 应复用）",

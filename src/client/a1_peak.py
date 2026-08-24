@@ -71,7 +71,7 @@ def measure_matmul_peak(n, iters, warmup, devices):
     def one():
         torch.npu.synchronize()
         t0 = time.monotonic()
-        c = a @ b
+        _ = a @ b
         torch.npu.synchronize()
         dt = time.monotonic() - t0
         return flops / dt

@@ -32,7 +32,7 @@ _SRC = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _SRC not in sys.path:
     sys.path.insert(0, _SRC)
 
-from client import (arrival, cases, closedloop, collect_metrics, cost,
+from client import (arrival, cases, closedloop, collect_metrics, cost,  # noqa: E402
                     executor, fairness, gate, lifecycle, mfu, metrics, oracle, roles,
                     scheduler, slo, window)
 import acceptance  # noqa: E402

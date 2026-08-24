@@ -98,7 +98,6 @@ def _wrap(sub, i):
 
 def _dialogue(cfg, ch, loader, repeat, n_session=16, n_round=4):
     sub = loader("sharegpt")
-    wl = cfg["workload"]
     cases = []
     seq = 0
     for s in range(n_session):
@@ -319,7 +318,10 @@ def generate_cases(cfg, datasets_dir, repeat=0, allow_missing=False):
     if cell not in _GENERATORS:
         raise ValueError(f"未知 cell={cell!r}，客户端合同生成器未注册")
     ch = common.config_hash(cfg)
-    loader = lambda name: common.load_subset(name, datasets_dir, allow_missing)
+
+    def loader(name):
+        return common.load_subset(name, datasets_dir, allow_missing)
+
     fn = _GENERATORS[cell]
     if cell == "a1":
         cases = fn(cfg, ch, repeat)
