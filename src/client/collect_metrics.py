@@ -196,8 +196,9 @@ def main():
     args = ap.parse_args()
     if args.cmd == "monitor":
         return monitor(args.out, args.interval, args.seconds, args.devices)
-    return aggregate(args.serve_log, args.metrics_url, args.pid,
-                     args.receipt, args.npu_log, args.out)
+    aggregate(args.serve_log, args.metrics_url, args.pid,
+              args.receipt, args.npu_log, args.out)
+    return 0
 
 
 if __name__ == "__main__":
