@@ -145,7 +145,7 @@ def _mode_metrics(cfg, quality, mode_verdict):
     return out
 
 
-def _finalize(args, cfg, records, config_hash, mode_verdict=None):
+def _finalize(args, cfg, records, config_hash, mode_verdict=None, quiet=False):
     """Z1 全链路收尾 + Z3 证据包：Q oracle → M 机制 → Z3 总门禁 → 落盘。
 
     ARGS:
@@ -154,6 +154,8 @@ def _finalize(args, cfg, records, config_hash, mode_verdict=None):
         records       C3 逐请求回执
         config_hash   合同 config_hash（cases_doc）
         mode_verdict  各模式产物（见 _mode_metrics）
+        quiet         为 True 时不打印 [run] Q/M/Z3 状态行（离线 selftest 用，
+                      避免 M/Z3 FAIL 的模拟用例输出被误读为 selftest 失败）
     RETURN:
         evidence_doc（写盘内容；供 Z2 聚合消费）
     """
@@ -216,11 +218,12 @@ def _finalize(args, cfg, records, config_hash, mode_verdict=None):
         _dump(os.path.join(args.out, "mechanisms.json"), mechanisms)
         _dump(os.path.join(args.out, "gate.json"), z3)
         _dump(os.path.join(args.out, "evidence.json"), evidence_doc)
-    print(f"[run] Q: ok={quality['summary']['ok']}/{quality['summary']['total']} "
-          f"gate={'PASS' if quality['gate']['ok'] else 'FAIL'}")
-    print(f"[run] M: {'PASS' if mechanisms['ok'] else 'FAIL'} "
-          f"{' ; '.join(mechanisms['reasons']) if mechanisms['reasons'] else '(无)'}")
-    print(f"[run] Z3 证据包: {z3['gate']}")
+    if not quiet:
+        print(f"[run] Q: ok={quality['summary']['ok']}/{quality['summary']['total']} "
+              f"gate={'PASS' if quality['gate']['ok'] else 'FAIL'}")
+        print(f"[run] M: {'PASS' if mechanisms['ok'] else 'FAIL'} "
+              f"{' ; '.join(mechanisms['reasons']) if mechanisms['reasons'] else '(无)'}")
+        print(f"[run] Z3 证据包: {z3['gate']}")
     return evidence_doc
 
 
@@ -617,7 +620,14 @@ def _mock_client(responses, error_on=()):
 
 
 async def _selftest(args):
-    cfg = acceptance.expand(args.cell, args.precision, args.model_ref)
+    # 通用 chat 解析 / SLO / 判定用例与 --cell 无关：固定用 a2-dialogue
+    # （声明 workload.slo、endpoint=/v1/chat/completions）跑通用用例，避免在 a1
+    # （/v1/completions、无 slo）下把 10 项通用用例误判失败；A1 专属用例单独用 a1。
+    # 仍先验证 args.cell 能正常展开，保证被校验配置本身合法。
+    cfg_any = acceptance.expand(args.cell, args.precision, args.model_ref)
+    if cfg_any is None:
+        return 1
+    cfg = acceptance.expand("a2-dialogue", "FP16")
     if cfg is None:
         return 1
     # 缩小到可快速完成的规模：自建迷你到达段（不经 capacity_scan，避免大 cap）
@@ -1025,14 +1035,28 @@ async def _selftest(args):
     rec_struct_bad = dict(rec_struct, output_text="not json")
     r = oracle.evaluate_one(cfg_a2, rec_struct_bad)
     check("q-struct-fail", not r["q_ok"] and r["q_errors"], f"errs={r['q_errors']}")
-    # Q5 W8A8 资格：下降 2pp > 1pp → 拒绝
-    fp16_q = {"summary": {"by_kind": {"reason": {"ok_pct": 100.0}}},
+    # Q5 W8A8 资格：下降 2pp > 1pp → 拒绝（by_kind 用 evaluate() 产出的真实结构：total/ok/ok_pct）
+    fp16_q = {"summary": {"by_kind": {"reason": {"total": 100, "ok": 100, "ok_pct": 100.0}}},
               "gate": {"ok": True, "reasons": []}}
-    w8_q = {"summary": {"by_kind": {"reason": {"ok_pct": 98.0}}},
+    w8_q = {"summary": {"by_kind": {"reason": {"total": 100, "ok": 98, "ok_pct": 98.0}}},
             "gate": {"ok": True, "reasons": []}}
     q5 = oracle.w8a8_qualification(fp16_q, w8_q)
     check("q-w8a8-drop", (not q5["ok"]) and abs(q5["per_metric"][0]["drop_pp"] - 2.0) < 0.01,
           f"drop={q5['per_metric']}")
+    # Q5 工具组前缀聚合：tool_single 7pp 下降（>1pp）也须被捕获（旧实现按精确键 .get("tool_") 漏检）
+    fp16_q2 = {"summary": {"by_kind": {
+        "tool_single": {"total": 100, "ok": 100, "ok_pct": 100.0},
+        "tool_multi_parallel": {"total": 100, "ok": 100, "ok_pct": 100.0}}},
+        "gate": {"ok": True, "reasons": []}}
+    w8_q2 = {"summary": {"by_kind": {
+        "tool_single": {"total": 100, "ok": 93, "ok_pct": 93.0},
+        "tool_multi_parallel": {"total": 100, "ok": 93, "ok_pct": 93.0}}},
+        "gate": {"ok": True, "reasons": []}}
+    q5b = oracle.w8a8_qualification(fp16_q2, w8_q2)
+    check("q-w8a8-tool-prefix-drop",
+          (not q5b["ok"]) and any(m["metric"] == "tool_" and abs(m["drop_pp"] - 7.0) < 0.01
+                                  for m in q5b["per_metric"]),
+          f"drop={q5b['per_metric']}")
 
     # 15) M1-M4：机制解析 + fail-closed 门禁
     g = metrics.parse_graph_counters(
@@ -1116,7 +1140,8 @@ async def _selftest(args):
                                   comparison_type="", asset_value_cny=None,
                                   power_kw=None, lifecycle_hours=0.5)
     ev = _finalize(fargs, cfg_a2, [rec_reason], "hash123",
-                   mode_verdict={"slo": slo.evaluate(cfg_a2, [rec_reason])})
+                   mode_verdict={"slo": slo.evaluate(cfg_a2, [rec_reason])},
+                   quiet=True)
     check("z1-evidence-structure",
           ev["config_hash"] == "hash123" and ev["z3"]["gate"] in ("PASS", "FAIL")
           and "quality" in ev and "mechanisms" in ev and "metrics" in ev
@@ -1139,7 +1164,8 @@ async def _selftest(args):
                                     receipt="", npu_log="", base_url="",
                                     port=8010)
     ev_m = _finalize(fargs_m, cfg_a2, [rec_reason], "hash123",
-                     mode_verdict={"slo": slo.evaluate(cfg_a2, [rec_reason])})
+                     mode_verdict={"slo": slo.evaluate(cfg_a2, [rec_reason])},
+                     quiet=True)
     # 自测目的=验证 M1 从 serve.log 解析（合成 log 仅含图捕获行，无 M2/M4 数据源；
     # M2/M4 由真机 acceptance.sh metrics 路径 + m-gate-ok 用例覆盖）
     m1 = next((c for c in ev_m["mechanisms"]["mechanisms"]

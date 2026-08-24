@@ -126,7 +126,8 @@ def aggregate(serve_log_path, metrics_url, pid=None, receipt_path=None,
     if compile_mode is None:
         if receipt_path and os.path.exists(receipt_path):
             try:
-                eff = json.load(open(receipt_path))["effective"]
+                with open(receipt_path) as f:
+                    eff = json.load(f)["effective"]
                 compile_mode = eff.get("server", {}).get("compile_mode")
             except (KeyError, ValueError, OSError):
                 pass
@@ -146,8 +147,9 @@ def aggregate(serve_log_path, metrics_url, pid=None, receipt_path=None,
 
     resource_monitor = {"samples": [], "hbm_peak_gib": None, "interval_s": 1.0, "count": 0}
     if npu_log_path and os.path.exists(npu_log_path):
-        resource_monitor = metrics.parse_resource_monitor(
-            open(npu_log_path, encoding="utf-8").read().splitlines(), interval_s=1.0)
+        with open(npu_log_path, encoding="utf-8") as f:
+            lines = f.read().splitlines()
+        resource_monitor = metrics.parse_resource_monitor(lines, interval_s=1.0)
 
     cpu_core_table = {"allowed": None, "affinity_line": None, "found": False}
     if pid:

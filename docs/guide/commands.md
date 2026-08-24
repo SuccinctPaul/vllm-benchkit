@@ -27,7 +27,10 @@
 
 **一句话**：`serve` 测「生产环境跑得怎么样」（含网络/排队/调度全链路，偏延迟），`throughput` 测「引擎本身能跑多快」（纯计算，偏吞吐、理论上限），`latency` 测「单请求纯延迟」（kernel 回归）。
 
-三者共用 `model`、`devices`、`bench.dataset`、`bench.dataset_path`、`bench.load_format`；结果除 stdout/tee 外，还会 `--save-result` 落盘 JSON 到 `runs/`（见 [output.md §1 产物清单](./output.md#L5)）。
+三者共用 `model`、`devices`、`bench.dataset`、`bench.dataset_path`、`bench.load_format`；结果除 stdout/tee 外，按子命令落盘（v0.18.0 差异见下）：
+- `serve`：`--save-result --result-dir runs/` 落 JSON；
+- `throughput`：v0.18.0 移除 `--save-result/--result-dir`，改用 `--output-json <mode>.json`；
+- `latency`：无落盘 flag，结果打印到 stdout 表格。
 
 ### 底层实际命令
 
@@ -35,7 +38,7 @@
 
 ```
 [bench] $ ./.venv/bin/vllm bench throughput --model Qwen/Qwen3-0.6B \
-  --dataset-name random --input-len 128 --output-len 128 --save-result --result-dir runs
+  --dataset-name random --input-len 128 --output-len 128 --output-json runs/<时间戳>-<sha7>-<sha7>/throughput.json
 ```
 
 ## 3. profile.sh 子命令

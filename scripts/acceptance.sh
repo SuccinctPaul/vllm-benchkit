@@ -40,7 +40,7 @@ DATASETS_DIR="${VLLM_BENCHKIT_DATASETS:-$ROOT/datasets}"
 # 0=fail-closed（缺工件即拒绝）；1=smoke 豁免缺工件（其余门禁仍强制）
 ALLOW_MISSING_DATASETS="${ALLOW_MISSING_DATASETS:-0}"
 
-usage() { echo "用法: $0 {list|profile|server|client|run|stop} [cell] [PREC] [--port ...]" >&2; exit 1; }
+usage() { echo "用法: $0 {list|profile|server|client|run|stop|metrics} [cell] [PREC] [--port ...]" >&2; exit 1; }
 
 # 解析 profile 元信息（profile/api/endpoint）
 profile_info() {
@@ -175,6 +175,14 @@ case "${1:-}" in
             while [ $# -gt 0 ]; do case "$1" in --base-url) BASE_URL="$2"; shift 2;; --num-prompts) NUM_PROMPTS="$2"; shift 2;; --request-rate) REQUEST_RATE="$2"; shift 2;; *) shift;; esac; done
             run_client "$cell" "$prec" ;;
   run)      shift; cell="${1:?}"; prec="${2:?FP16}"; shift 2
+            while [ $# -gt 0 ]; do case "$1" in
+              --port) PORT="$2"; shift 2;;
+              --base-url) BASE_URL="$2"; shift 2;;
+              --num-prompts) NUM_PROMPTS="$2"; shift 2;;
+              --request-rate) REQUEST_RATE="$2"; shift 2;;
+              --model-ref) MODEL_REF="$2"; shift 2;;
+              *) echo "[acceptance] 未知 run 参数: $1" >&2; exit 2;;
+            esac; done
             BASE_URL="${BASE_URL:-http://127.0.0.1:${PORT}}"
             # 兜底：设 EXIT trap，start_server 之后任何一步失败（如 OOM 令 set -e 提前退出）
             # 也会停掉本轮 serve，避免残留占着共享 NPU；正常路径显式 stop_server 后清 trap。

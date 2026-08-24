@@ -41,15 +41,17 @@ def _npu_model():
     try:
         out = subprocess.run(["npu-smi", "info"], capture_output=True,
                              text=True, timeout=30).stdout
-        for line in out.splitlines():
-            if "910" in line:
-                toks = line.split()
-                for t in toks:
-                    if "910" in t:
-                        return t
-                return toks[1] if len(toks) > 1 else None
-    except (OSError, subprocess.SubprocessError):
-        pass
+    except (OSError, subprocess.SubprocessError) as e:
+        print(f"[a1_peak] npu-smi 不可用，无法探测芯片型号: {e}",
+              file=sys.stderr)
+        return None
+    for line in out.splitlines():
+        if "910" in line:
+            toks = line.split()
+            for t in toks:
+                if "910" in t:
+                    return t
+            return toks[1] if len(toks) > 1 else None
     return None
 
 

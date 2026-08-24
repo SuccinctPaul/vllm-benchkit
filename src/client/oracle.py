@@ -201,6 +201,24 @@ def evaluate_one(cfg, rec):
     return {**base, "q_ok": not q_errors, "q_errors": q_errors}
 
 
+def _kind_pct(per_request, by_kind, kind_prefix):
+    """按 kind 前缀聚合成功率（%）；无样本返回 None。
+
+    优先用 per_request 明细逐条统计（kind 为完整字符串，如 tool_single）；
+    缺省（如自测传最小 summary）回退 by_kind 汇总，按样本数加权平均。
+    """
+    if per_request:
+        rows = [r for r in per_request if (r.get("kind") or "").startswith(kind_prefix)]
+        if not rows:
+            return None
+        return round(100.0 * sum(1 for r in rows if r.get("q_ok")) / len(rows), 2)
+    rows = [b for k, b in (by_kind or {}).items()
+            if k.startswith(kind_prefix) and b.get("total")]
+    if not rows:
+        return None
+    return round(100.0 * sum(b.get("ok", 0) for b in rows) / sum(b["total"] for b in rows), 2)
+
+
 def evaluate(cfg, records):
     """对一批回执做质量判定并汇总。
 
@@ -224,10 +242,7 @@ def evaluate(cfg, records):
         b["ok_pct"] = round(100.0 * b["ok"] / b["total"], 2) if b["total"] else 100.0
 
     def pct(kind_prefix):
-        rows = [r for r in per_request if (r["kind"] or "").startswith(kind_prefix)]
-        if not rows:
-            return None
-        return round(100.0 * sum(r["q_ok"] for r in rows) / len(rows), 2)
+        return _kind_pct(per_request, by_kind, kind_prefix)
 
     struct_pct = pct("struct")
     tool_pct = pct("tool_")
@@ -265,10 +280,10 @@ def w8a8_qualification(fp16_report, w8a8_report):
     per_metric = []
     reasons = []
     for m in metrics:
-        f16 = (fp16_report["summary"]["by_kind"] or {}).get(m)
-        w8 = (w8a8_report["summary"]["by_kind"] or {}).get(m)
-        f16_pct = f16["ok_pct"] if f16 else None
-        w8_pct = w8["ok_pct"] if w8 else None
+        f16_pct = _kind_pct((fp16_report or {}).get("per_request"),
+                            ((fp16_report or {}).get("summary") or {}).get("by_kind"), m)
+        w8_pct = _kind_pct((w8a8_report or {}).get("per_request"),
+                           ((w8a8_report or {}).get("summary") or {}).get("by_kind"), m)
         if f16_pct is None and w8_pct is None:
             continue
         drop = (f16_pct or 0.0) - (w8_pct or 0.0)

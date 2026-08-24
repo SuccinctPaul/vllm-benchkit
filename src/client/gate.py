@@ -20,10 +20,10 @@ from client import metrics, oracle
 # 各 check 在证据缺失时的默认判定：fail-closed（缺证据即视为不通过），
 # 但「不适用」的项（非角色化 profile 的 role、非 A4 的 cost）允许显式跳过。
 GATE_CHECKS = (
-    ("config",        "config 合法（receipt 全门禁 PASS）"),
-    ("role",          "角色化一致（I1 差分 equal）"),
+    ("config_ok",     "config 合法（receipt 全门禁 PASS）"),
+    ("role_diff",     "角色化一致（I1 差分 equal）"),
     ("sha_binding",   "代码/镜像 SHA 绑定（I3）"),
-    ("dataset",       "数据就绪（D2）"),
+    ("dataset_ok",    "数据就绪（D2）"),
     ("quality",       "质量资格（Q oracle 门禁）"),
     ("mechanisms",    "机制生效（M 门禁）"),
     ("no_trunc",      "无静默截断（附-3/8）"),
@@ -34,12 +34,16 @@ GATE_CHECKS = (
 def _bool_of(value):
     """把证据值归一为 (ok, not_applicable)。
 
-    None → 视为不适用（跳过）；dict → 取其 ok 字段；bool → 原样。
+    None → 视为不适用（跳过）；dict → 取其 ok 字段（role_diff 用 equal 字段）；
+    bool → 原样。
     """
     if value is None:
         return None, True
     if isinstance(value, dict):
-        return bool(value.get("ok")), False
+        ok = value.get("ok")
+        if ok is None:
+            ok = value.get("equal")
+        return bool(ok), False
     return bool(value), False
 
 
