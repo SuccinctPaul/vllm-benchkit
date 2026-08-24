@@ -1,6 +1,6 @@
 # vllm-benchkit 路线图（Roadmap）
 
-> 规划产物（grill-with-docs 会话）。现状：基础设施齐（deploy / bench / profile / prepare + config + ADR 0001–0006），P0 真机冒烟由另一 agent 进行。总方针：**先做好「性能对比」能力，达标后再进入拆解**。
+> 规划产物（grill-with-docs 会话）。现状：基础设施齐（deploy / bench / profile / prepare + config + ADR 0001–0012），P0 真机冒烟由另一 agent 进行。总方针：**先做好「性能对比」能力，达标后再进入拆解**。
 
 ## 核心能力（本轮主攻）
 

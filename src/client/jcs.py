@@ -14,7 +14,6 @@
 common.py 的 canonical_json 用于客户端合同哈希（B0/B1 复用同一合同，等价即可）；
 I2 的 comparison_id 用本模块做「配置身份」的精确规范化。
 """
-import json
 import math
 
 # RFC 8785 控制符短形式映射

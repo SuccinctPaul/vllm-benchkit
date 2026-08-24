@@ -53,4 +53,4 @@ uv sync
 - [official-capabilities.md](../official-capabilities.md) —— 官方能力清单与可增补项
 - [config/config.yaml](../../config/config.yaml) —— 参数默认配置
 - [config/vllm-xcheck/](../../config/vllm-xcheck/) —— 正式验收配置层（common + precision + cells + schema）
-- [docs/adr](../../docs/adr/) —— 架构决策记录（0001~0010）
+- [../adr/](../adr/) —— 架构决策记录（0001–0012，入口见 adr/README.md）

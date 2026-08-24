@@ -17,7 +17,7 @@
 
 ## 四条硬约束（决策 / Decision）
 
-1. **`--model-ref` 必须带组织前缀**：模型用 `Qwen/Qwen2.5-14B-Instruct` 这类 `组织/模型` 形式，才能命中离线缓存（`--model model_ref`，见 [src/acceptance.py](../acceptance/../src/acceptance.py) `model_server_argv`）。只写裸名会匹配不到离线缓存，加载失败。
+1. **`--model-ref` 必须带组织前缀**：模型用 `Qwen/Qwen2.5-14B-Instruct` 这类 `组织/模型` 形式，才能命中离线缓存（`--model model_ref`，见 [src/acceptance.py](../../src/acceptance.py) `model_server_argv`）。只写裸名会匹配不到离线缓存，加载失败。
 2. **serve 不接受图参数**：ascend build 的 serve 无 `--compile-mode`/`--cudagraph-mode`，启动时设 `VLLM_BENCHKIT_SKIP_GRAPH_ARGS=1` 让装配跳过这两个 flag（见 [src/acceptance.py](../../src/acceptance.py) `smoke 豁免` 段）；否则命令行报错。
 3. **`engine_seed` 必须显式 =0**：随机种子经 CLI 显式下发（`--seed 0`），防随机抖动，保证两次测量可对账（见 [src/acceptance.py](../../src/acceptance.py)）。
 4. **`structured_outputs_backend` 必须 `xgrammar`（禁止 auto）**：A2-STRUCT 逐 case 发 JSON Schema，`auto` 会挑一个不稳定的后端、结果不可复现也判不了 schema 合法率；显式钉 `xgrammar` 才能批量判（见 [config/vllm-xcheck/common.yaml](../../config/vllm-xcheck/common.yaml)）。

@@ -17,8 +17,6 @@ ordered_sha256 顺序循环，不随机重抽。同一 cell 两次生成字节�
 tools / schema：子集记录携带真实定义时优先（tools_source=dataset）；未接入时
 （bfcl/jsonschema url 未填）回退到模块内置固定集并标注 source（正式测量必须 dataset）。
 """
-import hashlib
-
 from client import common
 
 

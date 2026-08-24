@@ -96,8 +96,8 @@ precision
 - [../maintenance.md](../maintenance.md) —— 为什么能维护＆运行、改动自查
 - [../../CONTEXT.md](../../CONTEXT.md) —— 术语表（目标/阶段/三层归属/三类工作）
 - [../roadmap.md](../roadmap.md) —— Track 5 = vllm-xcheck 正式验收执行层；阶段门 Gate-H
-- [../guide/]() —— 通用 benchmark/profile 工具指南（黑盒能力）
-- [../adr/]() —— 架构决策记录（0001~0010）
+- [../guide/](../guide/) —— 通用 benchmark/profile 工具指南（黑盒能力）
+- [../adr/](../adr/) —— 架构决策记录（0001–0012，入口见 adr/README.md）
 - [../../config/vllm-xcheck/](../../config/vllm-xcheck/) —— 配置层本体（README + schema + common + cells + precision）
 - [task-expertise.md](./task-expertise.md) —— 任务专家速成：每条任务的需求/判定/为什么这么配
 

@@ -70,7 +70,7 @@
 > **本区是全部「官方 flag 语法/冲突待核实」的唯一权威**。其它文档（guide/how-to-run、guide/commands、guide/output、roadmap、ADR-0004）不再另立清单，只在此引用。装好环境后实测，结果直接回填这里（含本行上方表1备注、下方维护注意）。
 
 - **latency 语法不一致**：ascend 官方 latency CLI 用 `--num-iters-warmup 5 --num-iters 15`（见 benchmarks repo），我们 `bench.sh latency` 用 `--batch-size`。装好环境后以 `vllm bench latency --help` 实测，确认走哪套语法。
-- **结果落盘两种写法**：`serve` 走 `--save-result --result-dir`；v0.18.0 的 `throughput` 移除 `--save-result/--result-dir`、改用 `--output-json <file>`；`latency` 无落盘 flag（stdout 表格）。bench.sh 已按此收敛（见 [commands.md §2](../guide/commands.md)）。
+- **结果落盘两种写法**：`serve` 走 `--save-result --result-dir`；v0.18.0 的 `throughput` 移除 `--save-result/--result-dir`、改用 `--output-json <file>`；`latency` 无落盘 flag（stdout 表格）。bench.sh 已按此收敛（见 [commands.md §2](./guide/commands.md)）。
 - **离线剖析弃用**：vLLM 主线已弃用 `VLLM_TORCH_PROFILER_DIR` 环境变量，统一用 `--profiler-config`（PR #5928）。
 
 ## 表5：本期踢出（CONTEXT.md 边界）— 官方现成，未来需要时加 flag 即用
