@@ -226,3 +226,5 @@ datasets/
 
 # 部署拓扑清单：含 SSH URL / 目标机名等隐私，不入库（ADR-0006）
 config/topology.yaml
+
+.venv-docs

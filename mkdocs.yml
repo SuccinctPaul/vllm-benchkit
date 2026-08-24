@@ -1,0 +1,99 @@
+# vllm-notes 文档中心 —— MkDocs 站点配置
+# 说明：
+#   - 站点只发布 docs/ 子树；本文件、overrides/、_mkdocs/、.github/ 都在 docs 外，只进 git 不进站点。
+#   - 本地构建：.docs-venv/bin/mkdocs build   （独立工具环境，不污染项目 uv 锁）
+#   - 在线发布：.github/workflows/pages.yml（GitHub Actions → Pages）
+#   - 隐私：不在此处硬编码 repo_url；out-of-docs 链接由 _mkdocs/link_rewrite.py 在构建期改写。
+
+site_name: vllm-notes 文档中心
+site_description: vLLM + vLLM-Ascend 基准与验收（黑盒冒烟 → 正式验收）新手友好文档
+docs_dir: docs
+site_dir: site
+# repo_url 不在本文件硬编码（尊重隐私硬约束），由 CI 注入 / link_rewrite 插件从环境读取。
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.integrate
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: 切换为深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: 切换为浅色模式
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search
+  - link_rewrite
+
+extra_javascript:
+  - assets/translate.js
+
+extra_css:
+  - assets/translate.css
+
+extra:
+  social: []
+
+nav:
+  - 首页: README.md
+  - 理解系统: understand.md
+  - 快速开始: run.md
+  - 黑盒冒烟（guide）:
+      - 概述: guide/README.md
+      - 命令参考: guide/commands.md
+      - 配置参考: guide/config-reference.md
+      - 输出解读: guide/output.md
+      - 设计: guide/design.md
+      - 如何运行: guide/how-to-run.md
+  - 正式验收（acceptance）:
+      - 概述: acceptance/README.md
+      - 功能说明: acceptance/features.md
+      - 设计文档: acceptance/design.md
+      - 配置参考: acceptance/config-reference.md
+      - 任务清单: acceptance/acceptance-tasks.md
+      - 任务专家速成: acceptance/task-expertise.md
+      - V4.1 覆盖度: acceptance/v41-coverage.md
+      - 如何运行: acceptance/how-to-run.md
+  - 官方能力: official-capabilities.md
+  - 维护指南: maintenance.md
+  - 路线图: roadmap.md
+  - 架构决策（ADR）:
+      - 0001 用 vllm bench 当基准驱动: adr/0001-use-vllm-bench-as-benchmark-driver.md
+      - 0002 用 uv 建独立环境: adr/0002-manage-environment-with-uv.md
+      - 0003 canonical 源: adr/0003-canonical-source-repos.md
+      - 0004 用 Ascend Profiler: adr/0004-profiling-via-ascend-pytorch-profiler.md
+      - 0005 参数外置 config.yaml: adr/0005-config-via-yaml-env-precedence.md
+      - 0006 部署拓扑外置 topology.yaml: adr/0006-deployment-topology-manifest.md
+      - 0007 按 commit 归档 runs: adr/0007-commit-parameterized-benchmark-run.md
+      - 0008 xcheck 验收设计原则: adr/0008-vllm-xcheck-acceptance-design-principles.md
+      - 0009 A4-MT 隔离调优: adr/0009-a4-mt-isolation-tuning.md
+      - 0010 A1 算力口径: adr/0010-a1-compute-capability-eager.md
