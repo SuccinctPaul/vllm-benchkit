@@ -23,7 +23,14 @@ if [ ! -x "$PY" ]; then
   echo "[deploy] 创建 venv: $VENV"
   uv venv --python 3.11 "$VENV"
 fi
-uv pip install --python "$PY" pyyaml >/dev/null 2>&1 || true
+if ! uv pip install --python "$PY" pyyaml >/dev/null 2>&1; then
+  echo "[deploy] 错误：无法把 pyyaml 安装进 venv（$PY）。" >&2
+  echo "  gettopo.py 需要 pyyaml 才能解析 $CONFIG；若上方无报错，多半是" >&2
+  echo "  目标机访问不了 pypi（外网不可达 / 未配内网镜像）。先手动确认：" >&2
+  echo "      $PY -m pip install pyyaml" >&2
+  echo "  或为这台机器配置可用的 pypi 镜像后再重试。" >&2
+  exit 1
+fi
 eval "$("$PY" "$ROOT/src/gettopo.py" "$CONFIG")"
 
 # 环境变量优先于 topology.yaml（ADR-0005）

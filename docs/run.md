@@ -23,6 +23,13 @@
 
 安装（两条玩法共用同一套环境；全新裸机先补基础工具链，再装仓库依赖）：
 
+> **先决（必须一次）**：`config/topology.yaml` 被 `.gitignore`，**刚 clone 下来是不存在的**。第一次布置前先拷模板并填真实目标机信息：
+>
+> ```bash
+> cp config/topology.example.yaml config/topology.yaml
+> # 然后编辑 config/topology.yaml，把 server / dir / repos 三项换成你的真机值
+> ```
+
 ```bash
 # ① 补基础工具链（git/编译/python3.11/uv + 检测 CANN；清单见 guide/how-to-run.md §1.0）
 ./scripts/bootstrap.sh check   # 只读看还缺什么

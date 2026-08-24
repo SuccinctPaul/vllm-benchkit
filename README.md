@@ -18,7 +18,7 @@
 - [docs/roadmap.md](./docs/roadmap.md) —— 未来路线图（先做性能对比，达标后拆解）
 - [config/config.yaml](./config/config.yaml) —— 运行参数默认配置（环境变量优先，见 ADR-0005）
 - [config/vllm-xcheck/](./config/vllm-xcheck/) —— 正式验收配置层（common + precision + cells + schema）
-- [docs/adr](./docs/adr/0001-use-vllm-bench-as-benchmark-driver.md) —— 架构决策记录
+- [docs/adr](./docs/adr) —— 架构决策记录（入口见 adr/README.md 的决策地图与一览）
   - `0001` 用 `vllm bench` 当基准驱动
   - `0002` 用 uv 建独立环境，不继承预装环境
   - `0003` canonical 源 = `config/topology.yaml` 钉的双仓库
@@ -26,6 +26,11 @@
   - `0005` 参数外置到 config.yaml，环境变量优先
   - `0006` 部署拓扑外置到 config/topology.yaml（从 pyproject 移除仓库路径）
   - `0007` 基准按双 commit（vllm / vllm-ascend）归档到 runs/，附运行清单
+  - `0008` 验收子系统四原则
+  - `0009` A4 隔离软参数校准（相对隔离 ≤1.25×）
+  - `0010` A1 算力（MFU≥90%）+ 强制 eager + prefill 计量口径
+  - `0011` 真机运行硬约束收口（SKIP_GRAPH_ARGS / seed / xgrammar / model-ref）
+  - `0012` A2/A3 量测口径（容量裕量 + SLO 分档 + 串行切窗）
 
 ## 核心结论（简述）
 
