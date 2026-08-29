@@ -2,10 +2,6 @@
 
 本文说明每个脚本、每个子命令的**功能与适用场景**，帮你回答「该跑哪个命令、它到底做什么」。怎么执行见 [how-to-run.md](./how-to-run.md)，参数怎么配见 [config-reference.md](./config-reference.md)。
 
-> **统一入口 `bin/vllm-benckit`（CLI 薄壳）**：一条命令路由到各脚本与报告渲染。它只做"定位仓库根 → 子命令分发 → 透传参数"，**不复制任何业务逻辑**（守单一事实来源）。用法 `vllm-benckit help`：
-> - `report <目录>` → 调 [src/report.py](../../src/report.py)，把 `runs/accepted/` 验收产物渲染成 `report.md`（单 profile）或 `index.md`（批量汇总，含 PASS/FAIL）；
-> - `bench/profile/accept/a1peak/deploy/prepare/bootstrap` → 原样转发给对应 `scripts/*.sh`。
-
 ## 1. 脚本总览
 
 | 脚本 | 职责 | 子命令 |
