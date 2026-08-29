@@ -229,6 +229,14 @@ def _is_profile_dir(d: Path) -> bool:
     return any((d / n).is_file() for n in (F_GATE, F_SLO, F_QUALITY, F_MECHANISMS, F_EVIDENCE))
 
 
+def _rel(p: Path) -> Path:
+    """相对 cwd 显示；产物在 cwd 之外（如 CI 落地 /tmp）时回退绝对路径。"""
+    try:
+        return p.relative_to(Path.cwd())
+    except ValueError:
+        return p
+
+
 def _collect(dirs: list[Path]) -> tuple[list[Path], list[Path]]:
     """返回 (profiles, roots)。
 
@@ -277,14 +285,14 @@ def main(argv: list[str] | None = None) -> int:
         dest = p / "report.md"
         dest.write_text(_render(p), encoding="utf-8")
         written.append(dest)
-        print(f"[report] wrote {dest.relative_to(Path.cwd())}")
+        print(f"[report] wrote {_rel(dest)}")
 
     # 对每个根目录生成一份汇总 index.md
     for root in roots:
         subs = [p for p in profiles if p.parent == root]
         if subs:
             idx = _index(subs, root)
-            print(f"[report] wrote {idx.relative_to(Path.cwd())}")
+            print(f"[report] wrote {_rel(idx)}")
 
     if not written:
         print("[report] 未找到验收产物目录（缺 gate.json/slo.json 等）", file=sys.stderr)
