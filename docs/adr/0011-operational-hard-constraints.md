@@ -13,7 +13,7 @@
 
 ## 背景与为什么（Context）
 
-验收链路有 4 条约束**无法从《标准交付测试方案》推导、也不是设计取舍，而是 ascend build 的 v0.18.0 serve + 离线缓存的真机事实**。它们此前只写在 [how-to-run §8 常见坑](../acceptance/how-to-run.md#L106) 与 `config/vllm-xcheck/common.yaml` 注释里，没有决策身份；一旦被误改，会直接导致"服务起不来"或"结果不可复现""判定作弊"。故单独成 ADR，作为这些守则的唯一权威。
+验收链路有 4 条约束**无法从《标准交付测试方案》推导、也不是设计取舍，而是 ascend build 的 v0.18.0 serve + 离线缓存的真机事实**。它们此前只写在 [how-to-run §8 常见坑](../acceptance/how-to-run.md#L107) 与 `config/vllm-xcheck/common.yaml` 注释里，没有决策身份；一旦被误改，会直接导致"服务起不来"或"结果不可复现""判定作弊"。故单独成 ADR，作为这些守则的唯一权威。
 
 ## 四条硬约束（决策 / Decision）
 
@@ -36,10 +36,10 @@
 
 ## 后果（Consequences）
 
-- 新增/调整任一硬约束，先改本 ADR 与 `config/vllm-xcheck/common.yaml`，并同步 [how-to-run §8](../acceptance/how-to-run.md#L106) 的"常见坑"作为操作指引。
+- 新增/调整任一硬约束，先改本 ADR 与 `config/vllm-xcheck/common.yaml`，并同步 [how-to-run §8](../acceptance/how-to-run.md#L107) 的"常见坑"作为操作指引。
 - 换 ascend/vllm 版本时，`--model-ref` 前缀行为、`--compile-mode` 支持、`structured_outputs_backend` 缺省值都要按新版本复核后回填本文。
 
 ## 兑现回填（Verification）
 
-- ✅ **已落地**：四条约束均已写入 `config/vllm-xcheck/common.yaml`（`engine_seed: 0`、`structured_outputs_backend: xgrammar`）与 [src/acceptance.py](../../src/acceptance.py)（`SKIP_GRAPH_ARGS` 豁免、`--seed` 下发、`--model` 用 `model_ref`），并在 [how-to-run §8](../acceptance/how-to-run.md#L106) 标注为"不踩必翻车"。
+- ✅ **已落地**：四条约束均已写入 `config/vllm-xcheck/common.yaml`（`engine_seed: 0`、`structured_outputs_backend: xgrammar`）与 [src/acceptance.py](../../src/acceptance.py)（`SKIP_GRAPH_ARGS` 豁免、`--seed` 下发、`--model` 用 `model_ref`），并在 [how-to-run §8](../acceptance/how-to-run.md#L107) 标注为"不踩必翻车"。
 - 待补：真机完整跑一轮后，回填 `engine_seed=0` 是否真的渲染进 serve argv（见 [acceptance-coverage](../acceptance/acceptance-coverage.md) 的"正式测量前待补"）。

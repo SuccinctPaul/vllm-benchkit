@@ -63,7 +63,7 @@ uv sync
 
 起独立的 vLLM 服务，用客户端引擎按验收方案跑测量、判门禁、归档证据。完整操作（部署/数据子集/起服务/跑客户端/收指标/停服务/离线自测/常见坑）见 [acceptance/how-to-run.md](./acceptance/how-to-run.md)，这里只讲 A4 的完整流程图，其余 cell 类似。
 
-> **跑之前先花 30 秒看 [acceptance/how-to-run.md §8 常见坑](./acceptance/how-to-run.md#L106)**——里面有两个不踩必翻车：`--model-ref` 要带组织前缀（`Qwen/...`）才能命中离线缓存；serve 不接受 `--compile-mode`/`--cudagraph-mode`（设 `VLLM_BENCHKIT_SKIP_GRAPH_ARGS=1`）。
+> **跑之前先花 30 秒看 [acceptance/how-to-run.md §8 常见坑](./acceptance/how-to-run.md#L107)**——里面有两个不踩必翻车：`--model-ref` 要带组织前缀（`Qwen/...`）才能命中离线缓存；serve 不接受 `--compile-mode`/`--cudagraph-mode`（设 `VLLM_BENCHKIT_SKIP_GRAPH_ARGS=1`）。
 
 **A4 判定逻辑**（其余 cell 类似）：`scan` 多点容量扫描筛 SLO 合规 → 取三次中位 `b0_max` → 正式负载 = `0.70 × b0_max` → `warmup 5min + measure 30min` → `isolation`（每租户 solo 满载做隔离基线）。证据过 Q/M/Z 门禁全过才留档；每正式阶段 ≥3 次独立生命周期取中位数（异常只追加、不替换）。
 

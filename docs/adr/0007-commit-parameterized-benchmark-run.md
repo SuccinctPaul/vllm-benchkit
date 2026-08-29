@@ -23,4 +23,4 @@
 
 ## 兑现回填（Verification）
 
-- ✅ **已兑现**：`bench.sh` 每次运行自动落 `runs/<date>-<vllm_sha7>-<va_sha7>/` 并写 `manifest.yaml`（两仓完整哈希 + 生效参数快照 + seed + 时间/硬件）；默认版本来自 topology.yaml，任意 commit 为一次性覆盖（见 [guide/how-to-run §3.4](../guide/how-to-run.md#L89)）。
+- ✅ **已兑现**：`bench.sh` 每次运行自动落 `runs/<date>-<vllm_sha7>-<va_sha7>/` 并写 `manifest.yaml`（两仓完整哈希 + 生效参数快照 + seed + 时间/硬件）；默认版本来自 topology.yaml，任意 commit 为一次性覆盖（见 [guide/how-to-run §3.3](../guide/how-to-run.md#L89)）。

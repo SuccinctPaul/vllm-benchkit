@@ -86,7 +86,7 @@ BENCH_DATASET=sharegpt BENCH_DATASET_PATH=/path/to/SampleShareGPTData.jsonl ./sc
 ./scripts/profile.sh analyse    # 解析 profile_out/*_ascend_pt，打印算子数据
 ```
 
-### 3.4 指定 commit 跑基准（按 commit 归档）
+### 3.3 指定 commit 跑基准（按 commit 归档）
 
 `bench.sh` 每次运行会把产物归档到 `runs/<date>-<vllm_sha7>-<va_sha7>/`（目录名同时含 vllm 与 vllm-ascend 的短哈希，完整哈希与参数快照在同目录 `manifest.yaml`，见 [ADR-0007](../adr/0007-commit-parameterized-benchmark-run.md)）。默认测的是拓扑清单钉的版本；想测任意 commit，先手动 checkout 目标仓库再跑：
 
@@ -101,7 +101,7 @@ git -C <dir>/vllm checkout --detach <commit>
 
 注意：单一 `.venv` 串行，跑完回清单钉版本用 `./scripts/deploy.sh install`。
 
-### 3.5 覆盖参数（环境变量 > YAML）
+### 3.4 覆盖参数（环境变量 > YAML）
 
 不改配置文件即可临时覆盖：
 

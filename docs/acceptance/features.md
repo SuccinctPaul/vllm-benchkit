@@ -44,7 +44,7 @@ vllm-xcheck 是一台**自动化的验收"考场"**：你给一份配置（`conf
 
 ## 4. 三层配置 → 15 profile
 
-配置分层 → [config-reference.md §1 目录与分层](./config-reference.md#L23)；8 个 cell → 15 个 profile 的映射见 [README.md §8 个 cell](./README.md#L49)。每次验收用 `src/acceptance.py` 展开成单实例（argv/env/effective）。
+配置分层 → [config-reference.md §1 目录与分层](./config-reference.md#L23)；8 个 cell → 15 个 profile 的映射见 [README.md §8 个 cell](./README.md#L61)。每次验收用 `src/acceptance.py` 展开成单实例（argv/env/effective）。
 
 ## 5. 主要入口（CLI/脚本）
 
