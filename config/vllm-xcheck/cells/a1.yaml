@@ -1,0 +1,43 @@
+# cells/a1.yaml —— A1 算力口径合同（表附-3/表附-5/表附-6）。
+# 固定 FP16；closed-loop；主形状 MFU。compile=eager、cudagraph=none（实际图捕获=0）。
+meta:
+  cell: a1
+  profile: A1-FP16
+  precisions: [FP16]
+  endpoint: /v1/completions
+  api: completions
+
+model:
+  family: Qwen2.5-14B-Instruct
+  served_name: qwen2.5-14b-instruct-fp16   # A1 固定 FP16 逻辑名
+
+server:
+  max_model_len: 32768
+  gpu_memory_utilization: 0.85
+  max_num_seqs: 32
+  max_num_batched_tokens: 32768
+  enable_prefix_caching: false
+  enable_chunked_prefill: false
+  compile_mode: none
+  enforce_eager: true
+  cudagraph_mode: none
+  cudagraph_num_of_warmups: 1
+
+sampling:
+  ignore_eos: true         # A1 请求字段；严禁渲染成 serve CLI 参数
+  max_tokens: 1
+  logprobs: null           # /v1/completions 日志概率字段（表附-5）
+
+workload:
+  mode: closed-loop
+  dataset: synthetic
+  shapes:                  # 主形状 4096×8→1；辅助 1024×32→1、8192×4→1
+    - {input_len: 4096, batch: 8, output_len: 1}
+    - {input_len: 1024, batch: 32, output_len: 1}
+    - {input_len: 8192, batch: 4, output_len: 1}
+  timeouts:
+    warmup_s: 10           # warmup=10 轮
+    measure_s: 30          # measure=30 轮
+    per_request_s: 300
+    lifecycle_s: 1800
+  primary_metric: "main-shape MFU"

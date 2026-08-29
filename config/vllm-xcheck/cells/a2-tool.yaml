@@ -1,0 +1,50 @@
+# cells/a2-tool.yaml —— A2 工具调用（表附-3/表附-6）。
+# 64 例 = 32 single + 16 multi/parallel + 16 multi-turn；真实 tools、tool_choice=auto、parallel_tool_calls=true。
+meta:
+  cell: a2-tool
+  profile: A2-TOOL-{precision}-PC
+  precisions: [FP16, W8A8]
+  endpoint: /v1/chat/completions
+  api: chat
+
+model:
+  family: Qwen2.5-14B-Instruct
+  served_name: qwen2.5-14b-instruct-{precision}
+
+server:
+  gpu_memory_utilization: 0.85
+  max_num_seqs: 16
+  max_num_batched_tokens: 8192
+  enable_prefix_caching: true
+  enable_chunked_prefill: true
+  capture_sizes: [1, 2, 4, 8, 16]
+  compile_mode: vllm_compile
+  enforce_eager: false
+  cudagraph_mode: FULL_DECODE_ONLY
+  cudagraph_num_of_warmups: 1
+  auto_tool_choice: true
+
+sampling:
+  ignore_eos: false
+  max_tokens: null
+  logprobs: false
+  parallel_tool_calls: true   # tool_calling 显式 true
+
+workload:
+  mode: poisson
+  dataset: BFCL-V4             # 固定 64 例真实工具用例
+  dataset_fixed: {single: 32, multi_parallel: 16, multi_turn: 16}
+  rates: [0.25, 0.5, 1, 1.5, 2, 3, 4, 6]
+  max_concurrency: 16
+  caps: [150, 300, 600, 900, 1200, 1800, 2400, 3600]
+  timeouts:
+    warmup_s: 300              # 附-6 共同执行法：预热 5min
+    capacity_s: 7200
+    common_load_s: 1800
+    per_rate_s: 600
+    per_request_s: 300
+    drain_cooldown_s: 60
+  primary_metric: "common-load TTFT/TPOT + tool quality gate"
+  slo:                      # 附-8 A2 绝对 SLO（ms）
+    ttft: {mean_ms: 1000, p95_ms: 2000, p99_ms: 4000}
+    tpot: {mean_ms: 40, p95_ms: 60, p99_ms: 80}

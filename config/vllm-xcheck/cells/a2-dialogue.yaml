@@ -1,0 +1,48 @@
+# cells/a2-dialogue.yaml —— A2 通用问答/多轮（表附-3/表附-6）。
+# 16 会话×4 轮；同会话累积历史；两侧保存 prefix cache 与图执行证据（PC）。
+meta:
+  cell: a2-dialogue
+  profile: A2-DIALOGUE-{precision}-PC
+  precisions: [FP16, W8A8]
+  endpoint: /v1/chat/completions
+  api: chat
+
+model:
+  family: Qwen2.5-14B-Instruct
+  served_name: qwen2.5-14b-instruct-{precision}
+
+server:                       # 共同图配置（A2—A4：vllm_compile + FULL_DECODE_ONLY，warmups=1）
+  gpu_memory_utilization: 0.85
+  max_num_seqs: 32
+  max_num_batched_tokens: 16384
+  enable_prefix_caching: true
+  enable_chunked_prefill: true
+  capture_sizes: [1, 2, 4, 8, 16, 32]
+  compile_mode: vllm_compile
+  enforce_eager: false
+  cudagraph_mode: FULL_DECODE_ONLY
+  cudagraph_num_of_warmups: 1
+
+sampling:
+  ignore_eos: false          # A2
+  max_tokens: null           # 按 case 合同逐请求（表附-5）
+  logprobs: false            # Chat 日志概率字段
+
+workload:
+  mode: poisson              # 容量扫描 + 共同负载（=B0 三次中位最大合规点 ×0.70）
+  dataset: ShareGPT           # 固定 64 例多轮题集
+  dataset_fixed: {sessions: 16, rounds: 4}
+  request_shape: {multiturn: true}
+  rates: [0.25, 0.5, 1, 2, 3, 4, 6, 8]
+  max_concurrency: 32
+  caps: [150, 300, 600, 1200, 1800, 2400, 3600, 4800]
+  timeouts:
+    warmup_s: 300              # 附-6 共同执行法：预热 5min
+    capacity_s: 7200
+    common_load_s: 1800
+    per_rate_s: 600
+    drain_cooldown_s: 60
+  primary_metric: "max compliant output token/s + common-load TTFT/TPOT"
+  slo:                      # 附-8 A2 绝对 SLO（ms）
+    ttft: {mean_ms: 1000, p95_ms: 2000, p99_ms: 4000}
+    tpot: {mean_ms: 40, p95_ms: 60, p99_ms: 80}

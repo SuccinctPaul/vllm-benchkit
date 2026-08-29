@@ -1,0 +1,28 @@
+# vllm-benchkit 部署拓扑清单模板（config/topology.example.yaml）
+# 用法：cp config/topology.example.yaml config/topology.yaml，然后填入真实值。
+# 注意：config/topology.yaml 已被 .gitignore 忽略，含隐私信息不入库；本模板只提供结构，填占位符即可。
+# 描述"在哪里跑、跑哪些代码"：与 config/config.yaml（运行参数）严格分层、键不重叠。
+# 唯一消费方是 scripts/deploy.sh；仓库路径/commit 只在此维护。
+
+# SSH 目标机（服务器别名 / host，可用 $VLLM_BENCHKIT_SERVER 覆盖）
+server: your-server-host
+
+# 远程工作目录；下面 repos 里的仓库都会 clone 到此目录下（可用 $VLLM_BENCHKIT_DIR / $VLLM_BENCHKIT_WORKDIR 覆盖）
+dir: /path/to/workdir
+
+# 要在 dir 下 clone 的仓库；commit 留空 = 用 branch 最新，填了才钉死该提交（可复现锚点）
+# manage: false = deploy.sh 不 clone/checkout 它（它是监督者，deploy.sh 从它这里运行）
+repos:
+  vllm-benchkit:
+    url: git@github.com:<your-github-org>/vllm-benchkit.git
+    branch: dev
+    commit: ""
+    manage: false
+  vllm:
+    url: git@github.com:vllm-project/vllm.git
+    branch: releases/v0.18.0
+    commit: ""
+  vllm-ascend:
+    url: git@github.com:vllm-project/vllm-ascend.git
+    branch: releases/v0.18.0
+    commit: ""

@@ -1,0 +1,102 @@
+# vllm-xcheck common.yaml —— A1—A4 共同基线（表附-2 服务端 + 表附-4 env + 表附-5 采样）。
+# 本层只放冻结的共同值；cells/<cell>.yaml 做任务专属覆盖，precision/<p>.yaml 做精度 overlay。
+# 属「软件级参数」泛化：不含机器名/仓库 URL/revision 具体值（隐私边界约定），
+# 具体 revision/容器 digest 由实例化方在 config/（.gitignore）里填。
+meta:
+  cell: common
+
+model:
+  family: Qwen2.5-14B-Instruct   # model_family（表附-2）
+  load_format: auto              # effective 必须为 safetensors
+  kv_cache_dtype: auto           # requested（表附-2）；渲染到 serve argv
+  kv_cache_effective: float16    # effective（表附-2）；仅作 receipt 校验值，不渲染
+  block_size: 128
+
+server:
+  protocol: openai
+  host: 127.0.0.1
+  uvicorn_workers: 1
+  log_level: info
+  access_log: false
+  # 服务超时（表附-2）
+  startup_health_timeout_s: 900
+  health_interval_s: 5
+  graceful_shutdown_timeout_s: 120
+  # 拓扑：TP/PP/DP/EP/DCP 均 1（表附-3 共同拓扑，单张 910B2）
+  tensor_parallel_size: 1
+  pipeline_parallel_size: 1
+  data_parallel_size: 1
+  expert_parallel_size: 1
+  serving_mode: unified
+  pd_disaggregation: false
+  replicas: {server: 1, prefill_only: 0, decode_only: 0}
+  speculative: false
+  speculative_model: null          # 表附-2：model=null；tokens=0
+  speculative_tokens: 0
+  scheduling_policy: fcfs         # 禁止执行端改调度策略
+  distributed_executor_backend: mp
+  dcp_comm_backend: ag_rs         # 即使 DCP=1 也显式记账
+  disable_custom_all_reduce: true
+  cpu_binding_policy: topo_affinity
+  tokenizer_mode: auto
+  trust_remote_code: false
+  engine_seed: 0
+  enable_lora: false
+  enable_prompt_adapter: false
+  kv_offload: false
+  swap_space_gib: 0
+  cpu_offload_gib: 0
+  # 前端/模板（表附-8）
+  tool_call_parser: hermes
+  tool_parser_plugin: null          # 表附-3/附-8：plugin=null
+  reasoning_parser: null
+  chat_template: fixed-tokenizer-builtin   # 实际模板字节由模型清单绑定
+  content_format: string
+  trust_request_chat_template: false       # 表附-3：禁止请求携带模板
+  template_kwargs: {}
+  # 结构化输出（表附-3）：禁止 backend=auto
+  structured_outputs_backend: xgrammar
+  disable_any_whitespace: false
+  disable_additional_properties: false
+
+env:                                     # 表附-4 环境变量与设备绑定
+  VLLM_TARGET_DEVICE: npu
+  VLLM_USE_V1: "1"
+  VLLM_WORKER_MULTIPROC_METHOD: spawn
+  PYTHONHASHSEED: "0"
+  TOKENIZERS_PARALLELISM: "false"
+  HF_HUB_OFFLINE: "1"
+  TRANSFORMERS_OFFLINE: "1"
+  HF_DATASETS_OFFLINE: "1"
+  HCCL_CONNECT_TIMEOUT: "120"
+  ASCEND_VISIBLE_DEVICES: ""            # 实例化方填独占单卡 ID；写入 receipt 但不作分组维度
+  OMP_NUM_THREADS: "1"
+  PYTORCH_NPU_ALLOC_CONF: "expandable_segments:True"
+  TASK_QUEUE_ENABLE: "1"
+
+sampling:                                # 表附-5 统一采样与重复规则（所有 cell 一致）
+  temperature: 0.0
+  top_p: 1.0
+  top_k: -1
+  min_p: 0.0
+  presence_penalty: 0.0
+  frequency_penalty: 0.0
+  repetition_penalty: 1.0
+  n: 1
+  best_of: 1
+  beam_search: false
+  stop: []
+  stop_token_ids: []
+  min_tokens: 0
+  echo: false
+  detokenize: true
+  skip_special_tokens: true
+  spaces_between_special_tokens: true
+  add_special_tokens: true
+  truncate_prompt_tokens: null
+  add_generation_prompt: true
+  continue_final_message: false
+  stream_options: {include_usage: true}
+  streaming: true
+  client_seed: 0
+  repeats: 3               # 3 个独立完整生命周期，取中位数

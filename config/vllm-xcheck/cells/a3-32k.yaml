@@ -1,0 +1,46 @@
+# cells/a3-32k.yaml —— A3 长上下文稳定（表附-3/表附-7）。
+# 总上下文 32768 = 渲染后输入 30720 + 输出 2048；closed-loop、concurrency=1、6×5min 窗口。
+meta:
+  cell: a3-32k
+  profile: A3-32K-{precision}
+  precisions: [FP16, W8A8]
+  endpoint: /v1/chat/completions
+  api: chat
+
+model:
+  family: Qwen2.5-14B-Instruct
+  served_name: qwen2.5-14b-instruct-{precision}
+
+server:
+  gpu_memory_utilization: 0.85
+  max_num_seqs: 1
+  max_num_batched_tokens: 16384
+  enable_prefix_caching: false
+  enable_chunked_prefill: true
+  capture_sizes: [1]
+  compile_mode: vllm_compile
+  enforce_eager: false
+  cudagraph_mode: FULL_DECODE_ONLY
+  cudagraph_num_of_warmups: 1
+
+sampling:
+  ignore_eos: true             # A3
+  max_tokens: 2048
+  logprobs: false
+
+workload:
+  mode: closed-loop
+  dataset: long                # A3 业务长文本集（document_id 稳定排序循环拼接）
+  total_context_tokens: 32768
+  input_tokens: 30720
+  concurrency: 1
+  window_count: 6
+  window_s: 300                # 6×5min 窗口
+  max_requests: 64
+  min_completed_requests: 24
+  timeouts:
+    warmup_s: 300              # 5min
+    measure_s: 1800            # 30min
+    per_request_s: 1800
+    lifecycle_s: 3600
+  primary_metric: "window throughput CV + TTFT/TPOT drift + 0 failure"

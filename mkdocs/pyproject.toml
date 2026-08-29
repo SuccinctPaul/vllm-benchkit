@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vllm-benchkit-mkdocs-plugins"
+version = "0.1.0"
+description = "vllm-benchkit 文档站点本地 MkDocs 插件（link_rewrite：走出 docs/ 的链接改写成 GitHub blob）"
+requires-python = ">=3.11"
+dependencies = ["mkdocs"]
+
+[project.entry-points."mkdocs.plugins"]
+link_rewrite = "link_rewrite:LinkRewritePlugin"
+
+[tool.setuptools]
+py-modules = ["link_rewrite"]
