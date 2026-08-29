@@ -47,14 +47,18 @@ uv sync
 ```bash
 # 离线吞吐（random 数据集，零下载）—— 推荐先跑做 smoke
 ./scripts/bench.sh throughput
+# 应看到：退出码 0；stdout 有吞吐(Throughput tokens/s > 0)；产物落 runs/<date>-<sha>-<sha>/，同目录生成 manifest.yaml
 
 # 在线基准（默认 random）
 ./scripts/bench.sh serve
+# 应看到：退出码 0；stdout 输出 TTFT/ITL/TPOT/E2EL 的 mean/分位值（有限非 NaN）；同归档目录生成 serve 的 .json 结果
 
 # profiling：终端1 serve → 终端2 start/stop → analyse
 ./scripts/profile.sh serve
 ./scripts/profile.sh stop
 ./scripts/profile.sh analyse
+# 应看到：terminal1 serve 起来后，profile_out/ 下出现 <名>_ascend_pt 采集目录；
+#          analyse 后 stdout 打印出算子耗时表（能找到 kernel 明细），无 "empty profile" 报错
 ```
 
 命令怎么选、参数怎么配、结果怎么读：见 [guide/how-to-run.md](./guide/how-to-run.md)、[guide/commands.md](./guide/commands.md)、[guide/output.md](./guide/output.md)。

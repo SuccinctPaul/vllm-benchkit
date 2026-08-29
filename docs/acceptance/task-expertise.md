@@ -11,7 +11,7 @@
 > - **功能**（能干什么）→ [features.md](./features.md)
 > - **结构**（模块怎么组织/四段式）→ [design.md](./design.md)
 > - **流程**（怎么一步步跑）→ [how-to-run.md](./how-to-run.md)
-> - **你要的专业词**（MFU/Jain/B0/b0_max…）→ [全局名词小词典](../README.md#L41)，或下方「打底：补 3 个概念」。
+> - **你要的专业词**（MFU/Jain/B0/b0_max…）→ [CONTEXT.md「验收与 KPI 词」](../../CONTEXT.md#L107)，或下方「打底：补 3 个概念」。
 
 ## 打底：先补 3 个 vLLM 概念（不认识，下面几节会读不懂）
 

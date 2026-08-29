@@ -104,6 +104,35 @@ _Avoid_: 在文档里硬编码机器名、`/root/...` 路径、`git@github.com:.
 唯一消费 topology.yaml 的脚本：ssh 到 server → 确保 dir → clone/checkout 到清单钉的 commit → editable 安装 vllm/vllm-ascend（路径由清单推导）。CI/CD 式 provisioning（ADR-0006）。
 _Avoid_: 手动 rsync/scp 工作副本、在别处硬编码仓库路径
 
+### 验收与 KPI 词（黑话→大白话，友好一版，站点唯一权威）
+
+> 入门速遣用。完整术语层级见上文各节；此处是"先混个脸熟"的白话对照，
+> 全站就此一份，新增词条只进这里、不要在各 md 另开同义表。
+
+| 黑话 | 大白话 |
+|------|--------|
+| **cell / profile** | cell=一门"考什么"；profile = cell × 精度 = 一次能跑的完整考试 |
+| **-PC 后缀**（profile 名里的 `-PC`） | 标注该任务**开启前缀缓存**（prefix caching）。如 `A2-DIALOGUE-…-PC`；关闭缓存的任务（reason/struct/long/A3/A1）不带此后缀 |
+| **precision（FP16 / W8A8）** | 模型用哪种精度跑：16-bit 或 8-bit 量化 |
+| **配置三层** | common=共同规矩 / cells=每门课专属 / precision=精度项，三层合成一份 profile |
+| **fail-closed** | 只要有不满足就明确判不过，不搞"这次算了" |
+| **SLO** | 服务承诺的延迟上限（具体门槛见 [docs/acceptance/features.md](docs/acceptance/features.md)：如 A2 的 TTFT p99≤4000ms） |
+| **TTFT** | 首 Token 时间：请求发出 → 收到第一个输出 token 的耗时（含排队/调度/prefill）。量"多快开头"（精确量法见 [docs/guide/output.md](docs/guide/output.md)） |
+| **TPOT** | 每个输出 token 的平均生成耗时。量"吐字多快"（精确量法见 docs/guide/output.md） |
+| **E2EL** | 端到端延迟：请求发出 → 收到整段完整答案的耗时 |
+| **p99 / p95 / mean** | 把所有样本的某个指标（如 TTFT）排序后，取第 99%（绝大多数都被包含）／95% 分位／平均值。p99≤X 表示"几乎所有请求的该指标都不超过 X" |
+| **A1–A4** | 四门验收考核：算力 / SLO / 窗口稳定 / 多租户成本 |
+| **B0 / B1** | 同一配置的两份角色：基线/候选，用来对照"改了 vs 没改"差异；身份绑定、可字节对账 |
+| **closed-loop（闭环）** | 一次请求完成才能发下一个，最贴合"一连串请求接续等待"的真实压测 |
+| **b0_max** | 「容量扫描」里取三次中位的最大合规吞吐，正式负载取它的 `0.70×` |
+| **isolation（隔离）** | A4 里"单租户独占时的延迟 对比 4 租户挤一起时的延迟"，比值 ≤1.25× 才算不互相耽误 |
+| **MFU** | 算力利用率：实际用出的/GFlops 相对理论峰值（A1 要求 ≥90%） |
+| **Jain 指数** | 公平性度量：1=绝对公平，A4 要求 ≥0.90 |
+| **成本口径** | A4 里"每百万 token"统一出去÷21600h、电费 0.6 元/kWh 的算法，保证各租户同一价格 |
+| **receipt / 证据包** | 成绩单+原始答卷，放 `runs/accepted/<profile>-verifyN/` |
+| **生命周期** | 一次"起服务→预热→测量→停服务"的完整独立运行；同一正式测量要做 ≥3 次独立生命周期、结果取中位数，抗单次抖动 |
+| **two tiers（两档）** | 黑盒冒烟（快） vs 正式验收（严），同一处地基 |
+
 ### 本期范围（边界）
 
 **910B2（Atlas 卡型）**:

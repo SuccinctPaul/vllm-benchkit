@@ -66,12 +66,15 @@ uv sync   # 读 pyproject.toml：torch/torch-npu/vllm/vllm-ascend/pyyaml
 ```bash
 # 离线吞吐（合成 random 数据集，零下载）—— 推荐先跑这个做 smoke
 ./scripts/bench.sh throughput
+# 应看到：退出码 0；Throughput tokens/s > 0；产物落 runs/<date>-<sha>-<sha>/，同目录写 manifest.yaml（双 commit 归档，ADR-0007）
 
 # 在线（默认 random；换 sharegpt 需先下载并指定路径）
 BENCH_DATASET=sharegpt BENCH_DATASET_PATH=/path/to/SampleShareGPTData.jsonl ./scripts/bench.sh serve
+# 应看到：退出码 0；TTFT/ITL/TPOT/E2EL 各项 mean/分位为有限值；同归档目录生成 serve 的 .json
 
 # 离线延迟（单请求纯延迟，kernel 回归；batch 由 bench.batch_size 控制）
 ./scripts/bench.sh latency
+# 应看到：退出码 0；stdout 打印 TTFT/ITL/TPOT/E2EL 表格（v0.18.0 直接打 stdout，无 --save-result）
 ```
 
 命令差异（serve / throughput / latency 选哪个）见 [commands.md §2](./commands.md#L14) 的对照表。
@@ -84,6 +87,8 @@ BENCH_DATASET=sharegpt BENCH_DATASET_PATH=/path/to/SampleShareGPTData.jsonl ./sc
 # ...期间发送推理请求（另跑 bench.sh serve，或用 curl 打 /v1/completions）...
 ./scripts/profile.sh stop       # 停止采集
 ./scripts/profile.sh analyse    # 解析 profile_out/*_ascend_pt，打印算子数据
+# 应看到：start 后 profile_out/ 下出现 *_ascend_pt 采集目录（说明正在采集）；
+#          stop 后该目录停止增长；analyse 后 stdout 打印算子耗时表（能定位 kernel），无 "empty profile"
 ```
 
 ### 3.3 指定 commit 跑基准（按 commit 归档）
