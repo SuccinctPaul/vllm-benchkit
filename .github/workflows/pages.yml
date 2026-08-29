@@ -1,15 +1,17 @@
 # 构建 vllm-benchkit 文档并发布到 GitHub Pages。
 # 前置：仓库 Settings → Pages → Source 选 "GitHub Actions"（一次性）。
-# 触发：push 到目标分支（默认 feat/vllm-xcheck；如需改分支，改下方 on/push/branches）
+# 触发：push 到 main 时构建并部署；pull_request / workflow_dispatch 只做构建校验。
 # 说明：link_rewrite 插件是本地微包（mkdocs/），在构建步骤里 pip install -e 装上；
 #       repo/branch 由 GitHub 自动注入 GITHUB_REPOSITORY / GITHUB_REF_NAME。
+# 部署约束：只有当目标分支是默认分支（main）时才配置并部署 Pages；
+#       非 main 分支没有 github-pages 环境的部署权限，只做 build 校验。
 name: Build docs & deploy to Pages
 
 on:
   push:
     branches:
-      - feat/vllm-xcheck
       - main
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -33,15 +35,21 @@ jobs:
         run: |
           pip install --no-compile mkdocs-material
           pip install --no-compile -e ./mkdocs
-      - uses: actions/configure-pages@v4
       - name: Build docs site
         run: mkdocs build
+      # 仅 main（可部署分支）配置 Pages 站点；非 main 分支跳过，
+      # 避免因 Pages 未开启/无部署权限导致 build 误报失败。
+      - name: Configure GitHub Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v4
       - name: Upload Pages artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
   deploy:
     needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
