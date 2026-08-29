@@ -1,6 +1,6 @@
 # 参数配置（Config Reference）
 
-本文说明 `config/config.yaml` 的**全部参数**，以及**环境变量如何覆盖 YAML 默认值**。默认配置是 [config/config.yaml](../../config/config.yaml)。
+本文回答：**`config/config.yaml` 有哪些参数、环境变量如何覆盖默认值**。目标读者是想改模型/卡/数据集/长度等运行参数的人；读完你能自己改任意参数并知道它落到官方命令的哪个 flag。怎么执行见 [how-to-run.md](./how-to-run.md)，调试输出口径见 [output.md](./output.md)。默认配置是 [config/config.yaml](../../config/config.yaml)。
 
 ## 1. 全参数参考表
 

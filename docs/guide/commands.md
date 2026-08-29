@@ -61,6 +61,8 @@
 - 本地无拓扑/无仓库时回退平铺 `runs/<时间戳>-<mode>.log`
 - `profile_out/`：profile trace 原始产物
 
+**跑完怎么算成功**：每个子命令的成功判定（退出码 0、关键指标非零、日志无 NPU 报错）见 [output.md §3 黑盒跑通判定](./output.md#L54) 的 P0 口径。
+
 ## 5. 待核实项
 
 `--backend vllm` 是否进程内驱动、`latency` 与 `--save-result`/`--result-dir` 的真实 flag 语法等**核实收敛到单一权威**：[official-capabilities.md「已知冲突/待核实」](../official-capabilities.md)（见 [how-to-run.md §5](./how-to-run.md#L126)）。装好环境后实测回填仅在官方权威处进行，本文件不另行维护清单（避免多处漂移）。

@@ -40,6 +40,8 @@ uv sync
 ./scripts/profile.sh analyse # 解析算子数据
 ```
 
+**跑通长什么样**：`throughput` 应看到吞吐 tokens/s > 0、产物落 `runs/<date>-<sha>-<sha>/` + `manifest.yaml`；`profile analyse` 应看到 `profile_out/` 下 `*_ascend_pt` 被解析出算子表。判定的完整口径见 [output.md §3](./output.md#L54)。
+
 完整说明见 [how-to-run.md](./how-to-run.md)。
 
 ## 相关文档
