@@ -146,7 +146,8 @@ for s in subs:
             content = r["text"]
         else:
             content = json.dumps(r, ensure_ascii=False)
-        norm.append((cid, content))
+        if content.strip():
+            norm.append((cid, content))
     # case_id 升序后按 sha256(id||content) 稳定排序，取前 N（表附-8）
     picked = sorted(norm, key=lambda t: pick(*t))[:n]
     out = os.path.join(ddir, f"{name}.jsonl")
