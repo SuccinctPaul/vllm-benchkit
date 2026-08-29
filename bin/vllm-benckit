@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# vllm-benchkit 统一命令入口（CLI 薄壳）。
+
+# 职责边界（守"单一事实来源"）：
+#   本文件不分发任何业务逻辑，只做"定位 repo 根 → 子命令分发 → 透传剩余参数"。
+#   - report          逻辑在 src/report.py（纯 stdlib）
+#   - bench/profile/accept/deploy/prepare/bootstrap  逻辑在 scripts/*.sh
+#   若某子命令行为要改，改对应 src/*.py 或 scripts/*.sh，而不是改这里。
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+PY="${ROOT}/.venv/bin/python"
+[ -x "$PY" ] || PY="$(command -v python3)"
+
+# 统一在仓库根执行，使 runs/、config/、scripts/ 等相对路径相对仓库根（见 help）。
+cd "$ROOT"
+
+usage() {
+    cat <<'EOF'
+用法: vllm-benckit <子命令> [参数...]
+
+子命令（参数原样透传给对应实现）：
+  report  <目录...>       渲染验收报告（src/report.py；可传 profile 目录或 accepted 根）
+  bench   <mode> [args]   黑盒基准（scripts/bench.sh；mode: throughput|latency|serve）
+  profile <cmd> [args]    算子 profiling（scripts/profile.sh；cmd: serve|start|stop|analyse）
+  accept  <cmd> [args]    正式验收（scripts/acceptance.sh；cmd: list|profile|server|client|run|stop|metrics）
+  a1peak  [args]          A1 算力口径峰值（scripts/a1_peak.sh）
+  deploy|prepare|bootstrap  环境/依赖装配（scripts/deploy.sh|prepare.sh|bootstrap.sh）
+
+运行于仓库根目录；相对路径（runs/、config/、scripts/）均相对仓库根。
+EOF
+}
+
+case "${1:-help}" in
+  help|-h|--help) usage ;;
+
+  report) shift; exec "$PY" "$ROOT/src/report.py" "$@" ;;
+
+  bench)    shift; exec "$ROOT/scripts/bench.sh" "$@" ;;
+  profile)  shift; exec "$ROOT/scripts/profile.sh" "$@" ;;
+  accept)   shift; exec "$ROOT/scripts/acceptance.sh" "$@" ;;
+  a1peak)   shift; exec "$ROOT/scripts/a1_peak.sh" "$@" ;;
+  deploy)   shift; exec "$ROOT/scripts/deploy.sh" "$@" ;;
+  prepare)  shift; exec "$ROOT/scripts/prepare.sh" "$@" ;;
+  bootstrap) shift; exec "$ROOT/scripts/bootstrap.sh" "$@" ;;
+
+  *) echo "[vllm-benckit] 未知子命令: $1" >&2; usage >&2; exit 2 ;;
+esac
